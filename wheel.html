@@ -1,0 +1,2590 @@
+<!DOCTYPE html>
+
+<html lang="it">
+
+<head>
+
+<meta charset="UTF-8" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Ruota della Fortuna</title>
+
+<link
+
+rel="stylesheet"
+
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+
+/>
+
+<style>
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
+
+
+
+* {
+
+box-sizing: border-box;
+
+margin: 0;
+
+padding: 0;
+
+font-family: "Montserrat", "Segoe UI", Tahoma, Geneva, Verdana,
+
+sans-serif;
+
+}
+
+
+
+:root {
+
+--primary: #7c4dff;
+
+--primary-dark: #5e35b1;
+
+--secondary: #ff4081;
+
+--secondary-dark: #c2185b;
+
+--accent: #18ffff;
+
+--white: #ffffff;
+
+--light-bg: rgba(255, 255, 255, 0.92);
+
+--box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+
+}
+
+
+
+body {
+
+background-color: #0a0a23;
+
+display: flex;
+
+align-items: center;
+
+justify-content: center;
+
+min-height: 100vh;
+
+padding: 20px;
+
+position: relative;
+
+overflow-x: hidden;
+
+}
+
+
+
+/* Spectacular Background */
+
+body:before {
+
+content: "";
+
+position: fixed;
+
+left: 0;
+
+top: 0;
+
+width: 100%;
+
+height: 100%;
+
+background: radial-gradient(
+
+circle at 80% 20%,
+
+rgba(124, 77, 255, 0.3) 0%,
+
+transparent 30%
+
+),
+
+radial-gradient(
+
+circle at 20% 80%,
+
+rgba(24, 255, 255, 0.3) 0%,
+
+transparent 30%
+
+),
+
+radial-gradient(
+
+circle at 50% 50%,
+
+rgba(255, 64, 129, 0.2) 0%,
+
+transparent 60%
+
+);
+
+z-index: -2;
+
+}
+
+
+
+/* Stars animation background */
+
+.stars {
+
+position: fixed;
+
+top: 0;
+
+left: 0;
+
+width: 100%;
+
+height: 100%;
+
+z-index: -1;
+
+overflow: hidden;
+
+}
+
+
+
+.star {
+
+position: absolute;
+
+background-color: var(--white);
+
+border-radius: 50%;
+
+animation: twinkle var(--duration) infinite ease-in-out;
+
+opacity: 0;
+
+}
+
+
+
+@keyframes twinkle {
+
+0% {
+
+opacity: 0;
+
+}
+
+50% {
+
+opacity: var(--opacity);
+
+}
+
+100% {
+
+opacity: 0;
+
+}
+
+}
+
+
+
+/* Home Button */
+
+.home-btn {
+
+position: fixed;
+
+top: 30px;
+
+
+
+background-color: var(--primary);
+
+color: var(--white);
+
+padding: 12px 20px;
+
+border-radius: 30px;
+
+text-decoration: none;
+
+font-weight: 600;
+
+display: flex;
+
+align-items: center;
+
+gap: 10px;
+
+box-shadow: var(--box-shadow);
+
+transition: all 0.3s ease;
+
+z-index: 50;
+
+}
+
+
+
+.home-btn:hover {
+
+background-color: var(--primary-dark);
+
+transform: translateY(-3px);
+
+box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+
+}
+
+
+
+.container {
+
+position: relative;
+
+width: 100%;
+
+max-width: 100%;
+
+height: 100vh;
+
+display: flex;
+
+align-items: center;
+
+justify-content: center;
+
+}
+
+
+
+.wheel-container {
+
+position: absolute;
+
+width: 900px;
+
+height: 900px;
+
+overflow: hidden;
+
+left: 50%;
+
+top: 50%;
+
+transform: translate(-50%, -50%);
+
+z-index: 10;
+
+}
+
+
+
+.right-column {
+
+display: flex;
+
+flex-direction: column;
+
+gap: 50px;
+
+width: 380px;
+
+position: absolute;
+
+right: 40px;
+
+top: 50%;
+
+transform: translateY(-50%);
+
+z-index: 5;
+
+}
+
+
+
+.input-section {
+
+width: 100%;
+
+background-color: var(--light-bg);
+
+padding: 30px;
+
+border-radius: 16px;
+
+box-shadow: var(--box-shadow);
+
+display: flex;
+
+flex-direction: column;
+
+backdrop-filter: blur(10px);
+
+border: 1px solid rgba(255, 255, 255, 0.2);
+
+}
+
+
+
+.last-winner-section {
+
+width: 100%;
+
+background-color: var(--light-bg);
+
+padding: 30px;
+
+border-radius: 16px;
+
+box-shadow: var(--box-shadow);
+
+text-align: center;
+
+backdrop-filter: blur(10px);
+
+border: 1px solid rgba(255, 255, 255, 0.2);
+
+}
+
+
+
+.last-winner-section h2 {
+
+color: var(--primary);
+
+margin-bottom: 15px;
+
+font-size: 1.5rem;
+
+position: relative;
+
+display: inline-block;
+
+}
+
+
+
+.last-winner-section h2:after {
+
+content: "";
+
+position: absolute;
+
+bottom: -5px;
+
+left: 0;
+
+width: 100%;
+
+height: 3px;
+
+background: linear-gradient(90deg, var(--primary), var(--accent));
+
+border-radius: 2px;
+
+}
+
+
+
+.last-winner-display {
+
+background: linear-gradient(135deg, var(--primary), var(--accent));
+
+color: var(--white);
+
+padding: 18px;
+
+border-radius: 12px;
+
+font-size: 1.4rem;
+
+font-weight: bold;
+
+text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+
+min-height: 70px;
+
+display: flex;
+
+align-items: center;
+
+justify-content: center;
+
+transition: all 0.5s ease;
+
+}
+
+
+
+.last-winner-display.has-winner {
+
+background: linear-gradient(135deg, var(--secondary), var(--primary));
+
+animation: pulse 1.5s infinite alternate;
+
+}
+
+
+
+@keyframes pulse {
+
+from {
+
+box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+
+}
+
+to {
+
+box-shadow: 0 8px 30px rgba(124, 77, 255, 0.5);
+
+}
+
+}
+
+
+
+h1 {
+
+color: var(--primary);
+
+margin-bottom: 25px;
+
+text-align: center;
+
+font-size: 2rem;
+
+position: relative;
+
+display: inline-block;
+
+align-self: center;
+
+}
+
+
+
+h1:after {
+
+content: "";
+
+position: absolute;
+
+bottom: -8px;
+
+left: 0;
+
+width: 100%;
+
+height: 4px;
+
+background: linear-gradient(90deg, var(--secondary), var(--primary));
+
+border-radius: 2px;
+
+}
+
+
+
+.input-group {
+
+display: flex;
+
+gap: 10px;
+
+margin-bottom: 25px;
+
+}
+
+
+
+input {
+
+flex: 1;
+
+padding: 14px 20px;
+
+border: 2px solid #e0e0e0;
+
+border-radius: 10px;
+
+font-size: 16px;
+
+transition: all 0.3s;
+
+background-color: rgba(255, 255, 255, 0.9);
+
+}
+
+
+
+input:focus {
+
+outline: none;
+
+border-color: var(--primary);
+
+box-shadow: 0 0 0 3px rgba(124, 77, 255, 0.2);
+
+}
+
+
+
+button {
+
+background-color: var(--primary);
+
+color: var(--white);
+
+border: none;
+
+border-radius: 10px;
+
+padding: 14px 24px;
+
+cursor: pointer;
+
+font-size: 16px;
+
+font-weight: 600;
+
+transition: all 0.3s;
+
+display: flex;
+
+align-items: center;
+
+justify-content: center;
+
+gap: 8px;
+
+}
+
+
+
+button:hover {
+
+background-color: var(--primary-dark);
+
+transform: translateY(-2px);
+
+box-shadow: 0 4px 12px rgba(124, 77, 255, 0.3);
+
+}
+
+
+
+button:active {
+
+transform: translateY(0);
+
+}
+
+
+
+button:disabled {
+
+background-color: #9fa8da;
+
+cursor: not-allowed;
+
+transform: none;
+
+box-shadow: none;
+
+}
+
+
+
+.shuffle-btn {
+
+width: 100%;
+
+margin-top: 5px;
+
+}
+
+
+
+.shuffle-btn i {
+
+animation: rotate 3s infinite linear;
+
+animation-play-state: paused;
+
+}
+
+
+
+.shuffle-btn:hover i {
+
+animation-play-state: running;
+
+}
+
+
+
+@keyframes rotate {
+
+from {
+
+transform: rotate(0deg);
+
+}
+
+to {
+
+transform: rotate(360deg);
+
+}
+
+}
+
+
+
+.names-list {
+
+display: flex;
+
+flex-wrap: wrap;
+
+gap: 10px;
+
+margin-top: 20px;
+
+max-height: 300px;
+
+overflow-y: auto;
+
+padding-right: 8px;
+
+}
+
+
+
+.names-list::-webkit-scrollbar {
+
+width: 6px;
+
+}
+
+
+
+.names-list::-webkit-scrollbar-track {
+
+background: rgba(0, 0, 0, 0.05);
+
+border-radius: 3px;
+
+}
+
+
+
+.names-list::-webkit-scrollbar-thumb {
+
+background: var(--primary);
+
+border-radius: 3px;
+
+}
+
+
+
+.name-tag {
+
+background-color: rgba(232, 234, 246, 0.8);
+
+padding: 10px 15px;
+
+border-radius: 20px;
+
+display: flex;
+
+align-items: center;
+
+gap: 8px;
+
+transition: all 0.2s;
+
+border: 1px solid rgba(124, 77, 255, 0.2);
+
+}
+
+
+
+.name-tag:hover {
+
+background-color: rgba(232, 234, 246, 1);
+
+transform: translateY(-2px);
+
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+}
+
+
+
+.name-tag span {
+
+color: #283593;
+
+font-weight: 500;
+
+}
+
+
+
+.name-tag button {
+
+background-color: transparent;
+
+color: var(--secondary);
+
+padding: 0;
+
+font-size: 18px;
+
+height: 24px;
+
+width: 24px;
+
+display: flex;
+
+align-items: center;
+
+justify-content: center;
+
+border-radius: 50%;
+
+transition: all 0.2s;
+
+}
+
+
+
+.name-tag button:hover {
+
+background-color: var(--secondary);
+
+color: var(--white);
+
+box-shadow: none;
+
+transform: none;
+
+}
+
+
+
+canvas#wheel {
+
+display: block;
+
+width: 100%;
+
+height: 100%;
+
+filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.3));
+
+}
+
+
+
+#spin {
+
+font: 1.5em/0 "Montserrat", "Segoe UI", Tahoma, Geneva, Verdana,
+
+sans-serif;
+
+user-select: none;
+
+cursor: pointer;
+
+display: flex;
+
+justify-content: center;
+
+align-items: center;
+
+position: absolute;
+
+top: 50%;
+
+left: 50%;
+
+width: 30%;
+
+height: 30%;
+
+margin: -15%;
+
+background: var(--primary);
+
+color: var(--white);
+
+box-shadow: 0 0 0 10px var(--primary-dark),
+
+0 0px 20px 5px rgba(0, 0, 0, 0.4);
+
+border-radius: 50%;
+
+transition: all 0.5s;
+
+font-weight: bold;
+
+font-size: 26px;
+
+text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+}
+
+
+
+#spin:hover {
+
+transform: scale(1.05);
+
+box-shadow: 0 0 0 10px var(--primary-dark),
+
+0 0px 30px 8px rgba(124, 77, 255, 0.5);
+
+}
+
+
+
+#spin::after {
+
+content: "";
+
+position: absolute;
+
+top: -20px;
+
+border: 12px solid transparent;
+
+border-bottom-color: var(--white);
+
+border-top: none;
+
+}
+
+
+
+.popup-overlay {
+
+position: fixed;
+
+top: 0;
+
+left: 0;
+
+width: 100%;
+
+height: 100%;
+
+background-color: rgba(0, 0, 0, 0.8);
+
+backdrop-filter: blur(5px);
+
+display: flex;
+
+align-items: center;
+
+justify-content: center;
+
+z-index: 100;
+
+opacity: 0;
+
+visibility: hidden;
+
+transition: opacity 0.4s, visibility 0.4s;
+
+}
+
+
+
+.popup-overlay.active {
+
+opacity: 1;
+
+visibility: visible;
+
+}
+
+
+
+.popup {
+
+background-color: var(--white);
+
+border-radius: 20px;
+
+padding: 40px;
+
+width: 90%;
+
+max-width: 450px;
+
+text-align: center;
+
+box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+
+transform: scale(0.8) translateY(20px);
+
+transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+position: relative;
+
+overflow: hidden;
+
+}
+
+
+
+.popup::before {
+
+content: "";
+
+position: absolute;
+
+top: 0;
+
+left: 0;
+
+width: 100%;
+
+height: 8px;
+
+background: linear-gradient(90deg, var(--secondary), var(--primary));
+
+}
+
+
+
+.popup-overlay.active .popup {
+
+transform: scale(1) translateY(0);
+
+}
+
+
+
+.popup h2 {
+
+color: var(--primary);
+
+margin-bottom: 20px;
+
+font-size: 1.8rem;
+
+}
+
+
+
+.winner-name {
+
+font-size: 32px;
+
+color: var(--secondary);
+
+margin: 25px 0;
+
+padding: 20px;
+
+background-color: rgba(255, 64, 129, 0.1);
+
+border-radius: 12px;
+
+font-weight: bold;
+
+box-shadow: 0 6px 15px rgba(255, 64, 129, 0.15);
+
+position: relative;
+
+overflow: hidden;
+
+}
+
+
+
+.winner-name::after {
+
+content: "";
+
+position: absolute;
+
+top: -50%;
+
+left: -50%;
+
+width: 200%;
+
+height: 200%;
+
+background: linear-gradient(
+
+rgba(255, 255, 255, 0.3),
+
+rgba(255, 255, 255, 0)
+
+);
+
+transform: rotate(30deg);
+
+animation: shimmer 3s infinite linear;
+
+}
+
+
+
+@keyframes shimmer {
+
+from {
+
+transform: translateX(-100%) rotate(30deg);
+
+}
+
+to {
+
+transform: translateX(100%) rotate(30deg);
+
+}
+
+}
+
+
+
+.popup-buttons {
+
+display: flex;
+
+gap: 15px;
+
+justify-content: center;
+
+margin-top: 30px;
+
+}
+
+
+
+.close-btn {
+
+background-color: #9e9e9e;
+
+}
+
+
+
+.close-btn:hover {
+
+background-color: #757575;
+
+}
+
+
+
+.remove-btn {
+
+background-color: var(--secondary);
+
+}
+
+
+
+.remove-btn:hover {
+
+background-color: var(--secondary-dark);
+
+}
+
+
+
+/* Confetti effect for winner */
+
+.confetti-container {
+
+position: fixed;
+
+top: 0;
+
+left: 0;
+
+width: 100%;
+
+height: 100%;
+
+pointer-events: none;
+
+z-index: 99;
+
+}
+
+
+
+.confetti {
+
+position: absolute;
+
+width: 10px;
+
+height: 10px;
+
+opacity: 0;
+
+}
+
+
+
+@keyframes fall {
+
+0% {
+
+transform: translateY(-100vh) rotate(0deg);
+
+opacity: 1;
+
+}
+
+100% {
+
+transform: translateY(100vh) rotate(360deg);
+
+opacity: 0;
+
+}
+
+}
+
+
+
+/* Responsive styles */
+
+@media (max-width: 1300px) {
+
+.wheel-container {
+
+width: 700px;
+
+height: 700px;
+
+}
+
+}
+
+
+
+@media (max-width: 1100px) {
+
+.container {
+
+height: auto;
+
+padding-top: 80px;
+
+padding-bottom: 400px;
+
+flex-direction: column;
+
+}
+
+
+
+.wheel-container {
+
+width: 550px;
+
+height: 550px;
+
+position: relative;
+
+left: auto;
+
+top: auto;
+
+transform: none;
+
+margin-bottom: 50px;
+
+}
+
+
+
+.right-column {
+
+position: relative;
+
+top: auto;
+
+right: auto;
+
+transform: none;
+
+width: 100%;
+
+max-width: 550px;
+
+margin: 0 auto;
+
+}
+
+
+
+#spin {
+
+font-size: 22px;
+
+}
+
+}
+
+
+
+@media (max-width: 600px) {
+
+.home-btn {
+
+top: 20px;
+
+left: 20px;
+
+padding: 10px 16px;
+
+font-size: 14px;
+
+}
+
+
+
+.container {
+
+padding-bottom: 350px;
+
+}
+
+
+
+.wheel-container {
+
+width: 340px;
+
+height: 340px;
+
+}
+
+
+
+#spin {
+
+font-size: 18px;
+
+}
+
+
+
+.right-column {
+
+max-width: 340px;
+
+}
+
+
+
+.input-section,
+
+.last-winner-section {
+
+padding: 20px;
+
+}
+
+
+
+h1 {
+
+font-size: 1.6rem;
+
+}
+
+
+
+.last-winner-section h2 {
+
+font-size: 1.3rem;
+
+}
+
+
+
+.last-winner-display {
+
+font-size: 1.2rem;
+
+padding: 15px;
+
+}
+
+
+
+.popup {
+
+padding: 30px 20px;
+
+}
+
+
+
+.winner-name {
+
+font-size: 24px;
+
+padding: 15px;
+
+}
+
+}
+
+</style>
+
+</head>
+
+
+
+<body>
+
+<!-- Stars background -->
+
+<div class="stars" id="stars-container"></div>
+
+
+
+<!-- Home button -->
+
+<a href="index.html" class="home-btn">
+
+<i class="fas fa-home"></i>
+
+Torna alla Home
+
+</a>
+
+
+
+<!-- Confetti container -->
+
+<div class="confetti-container" id="confetti-container"></div>
+
+
+
+<div class="container">
+
+<!-- Wheel section at the center -->
+
+<div class="wheel-container" id="spin_the_wheel">
+
+<canvas id="wheel" width="400" height="400"></canvas>
+
+<div id="spin">SPIN</div>
+
+</div>
+
+
+
+<!-- Column for last winner and input section -->
+
+<div class="right-column">
+
+<!-- Last winner section -->
+
+<div class="last-winner-section">
+
+<h2>Ultimo Vincitore</h2>
+
+<div class="last-winner-display" id="last-winner-display">
+
+<span>Nessun vincitore</span>
+
+</div>
+
+</div>
+
+
+
+<!-- Input section -->
+
+<div class="input-section">
+
+<h1>Ruota della Fortuna</h1>
+
+<div class="input-group">
+
+<input
+
+type="text"
+
+id="name-input"
+
+placeholder="Inserisci un nome..."
+
+/>
+
+</div>
+
+<button class="shuffle-btn" id="shuffle-btn">
+
+<i class="fas fa-random"></i> Shuffle
+
+</button>
+
+<div class="names-list" id="names-list"></div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="popup-overlay" id="popup-overlay">
+
+<div class="popup">
+
+<h2>Abbiamo un vincitore!</h2>
+
+<div class="winner-name" id="winner-name">Nome Vincitore</div>
+
+<div class="popup-buttons">
+
+<button class="close-btn" id="close-popup-btn">
+
+<i class="fas fa-times"></i> Chiudi
+
+</button>
+
+<button class="remove-btn" id="remove-winner-btn">
+
+<i class="fas fa-trash-alt"></i> Rimuovi dalla Ruota
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+// Elementi DOM
+
+const nameInput = document.getElementById("name-input");
+
+const namesList = document.getElementById("names-list");
+
+const wheel = document.getElementById("wheel");
+
+const shuffleBtn = document.getElementById("shuffle-btn");
+
+const popupOverlay = document.getElementById("popup-overlay");
+
+const winnerNameEl = document.getElementById("winner-name");
+
+const closePopupBtn = document.getElementById("close-popup-btn");
+
+const removeWinnerBtn = document.getElementById("remove-winner-btn");
+
+const lastWinnerDisplay = document.getElementById(
+
+"last-winner-display"
+
+);
+
+const confettiContainer = document.getElementById("confetti-container");
+
+const starsContainer = document.getElementById("stars-container");
+
+
+
+// Crea stelle animate per lo sfondo
+
+createStars();
+
+
+
+function createStars() {
+
+for (let i = 0; i < 100; i++) {
+
+const star = document.createElement("div");
+
+star.classList.add("star");
+
+
+
+// Posizione casuale
+
+const x = Math.random() * 100;
+
+const y = Math.random() * 100;
+
+
+
+// Dimensione casuale
+
+const size = Math.random() * 3 + 1;
+
+
+
+// Durata e opacità casuale
+
+const duration = Math.random() * 3 + 2;
+
+const opacity = Math.random() * 0.7 + 0.3;
+
+
+
+star.style.left = `${x}%`;
+
+star.style.top = `${y}%`;
+
+star.style.width = `${size}px`;
+
+star.style.height = `${size}px`;
+
+star.style.setProperty("--duration", `${duration}s`);
+
+star.style.setProperty("--opacity", opacity);
+
+star.style.animationDelay = `${Math.random() * 5}s`;
+
+
+
+starsContainer.appendChild(star);
+
+}
+
+}
+
+
+
+// Sistema audio con Web Audio API
+
+let audioContext;
+
+let spinSound;
+
+let winSound;
+
+let currentSpinSource = null;
+
+
+
+// Inizializza il sistema audio
+
+function initAudio() {
+
+// Crea l'AudioContext solo quando l'utente interagisce
+
+audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+
+// Crea il suono per la rotazione della ruota
+
+createSpinSound();
+
+
+// Crea il suono per la vittoria
+
+createWinSound();
+
+}
+
+
+
+// Crea il suono di rotazione della ruota
+
+function createSpinSound() {
+
+// Durata totale del suono
+
+const duration = 5; // secondi
+
+
+// Crea un buffer per il suono
+
+const sampleRate = audioContext.sampleRate;
+
+const bufferSize = duration * sampleRate;
+
+const buffer = audioContext.createBuffer(1, bufferSize, sampleRate);
+
+const data = buffer.getChannelData(0);
+
+
+// Genera il suono di click che rallenta
+
+let clickRate = 25; // Frequenza iniziale dei click (più alto = più veloce)
+
+let clickSpacing = sampleRate / clickRate;
+
+let nextClick = 0;
+
+let clickIntensity = 0.7; // Volume iniziale
+
+
+for (let i = 0; i < bufferSize; i++) {
+
+// Calcola la frequenza dei click che rallenta nel tempo
+
+const progress = i / bufferSize;
+
+clickRate = 25 * (1 - progress * 0.95); // Rallenta gradualmente
+
+clickSpacing = sampleRate / clickRate;
+
+
+// Genera un click quando è il momento
+
+if (i >= nextClick) {
+
+// Il suono di click è un breve impulso
+
+const clickDuration = 0.01 * sampleRate; // 10ms
+
+for (let j = 0; j < clickDuration && i + j < bufferSize; j++) {
+
+const clickProgress = j / clickDuration;
+
+// Forma d'onda del click (breve decadimento)
+
+data[i + j] = clickIntensity * (1 - clickProgress) * Math.sin(j * 0.5);
+
+}
+
+// Calcola il momento del prossimo click
+
+nextClick = i + clickSpacing;
+
+// Riduci gradualmente il volume
+
+clickIntensity = 0.7 * (1 - progress);
+
+}
+
+}
+
+
+// Salva il buffer per riutilizzarlo
+
+spinSound = buffer;
+
+}
+
+
+
+// Crea il suono di vittoria
+
+function createWinSound() {
+
+// Durata totale del suono
+
+const duration = 1.5; // secondi
+
+
+// Crea un buffer per il suono
+
+const sampleRate = audioContext.sampleRate;
+
+const bufferSize = duration * sampleRate;
+
+const buffer = audioContext.createBuffer(1, bufferSize, sampleRate);
+
+const data = buffer.getChannelData(0);
+
+
+// Note musicali per una fanfara di vittoria
+
+const notes = [
+
+261.63, // Do
+
+329.63, // Mi
+
+392.00, // Sol
+
+523.25 // Do (ottava superiore)
+
+];
+
+
+// Durate relative delle note
+
+const noteDurations = [0.2, 0.2, 0.3, 0.8];
+
+let currentPosition = 0;
+
+
+// Genera le note in sequenza
+
+for (let i = 0; i < notes.length; i++) {
+
+const frequency = notes[i];
+
+const noteDuration = noteDurations[i] * duration * sampleRate;
+
+
+for (let j = 0; j < noteDuration; j++) {
+
+const t = j / sampleRate;
+
+
+// Forma d'onda sinusoidale con inviluppo ADSR semplificato
+
+let envelope = 1.0;
+
+const attackTime = 0.01; // 10ms
+
+const releaseTime = 0.1; // 100ms
+
+
+if (j < attackTime * sampleRate) {
+
+// Attack phase
+
+envelope = j / (attackTime * sampleRate);
+
+} else if (j > noteDuration - releaseTime * sampleRate) {
+
+// Release phase
+
+envelope = (noteDuration - j) / (releaseTime * sampleRate);
+
+}
+
+
+// Aggiunge un po' di vibrato per rendere il suono più ricco
+
+const vibrato = 1 + 0.005 * Math.sin(2 * Math.PI * 6 * t);
+
+
+// Combina tutto per creare la nota
+
+data[currentPosition + j] =
+
+0.6 * envelope * Math.sin(2 * Math.PI * frequency * vibrato * t);
+
+}
+
+
+currentPosition += noteDuration;
+
+}
+
+
+// Salva il buffer per riutilizzarlo
+
+winSound = buffer;
+
+}
+
+
+
+// Funzione per riprodurre il suono di rotazione
+
+function playSpinSound() {
+
+if (!audioContext) {
+
+initAudio();
+
+}
+
+
+// Se c'è già un suono in riproduzione, fermalo
+
+if (currentSpinSource) {
+
+currentSpinSource.stop();
+
+}
+
+
+// Crea una sorgente dal buffer
+
+const source = audioContext.createBufferSource();
+
+source.buffer = spinSound;
+
+
+// Crea un nodo gain per controllare il volume
+
+const gainNode = audioContext.createGain();
+
+gainNode.gain.value = 0.7; // Volume
+
+
+// Collega i nodi
+
+source.connect(gainNode);
+
+gainNode.connect(audioContext.destination);
+
+
+// Riproduci il suono
+
+source.start();
+
+currentSpinSource = source;
+
+
+return source; // Restituisce la sorgente per fermarla se necessario
+
+}
+
+
+
+// Funzione per riprodurre il suono di vittoria
+
+function playWinSound() {
+
+if (!audioContext) {
+
+initAudio();
+
+}
+
+
+// Crea una sorgente dal buffer
+
+const source = audioContext.createBufferSource();
+
+source.buffer = winSound;
+
+
+// Crea un nodo gain per controllare il volume
+
+const gainNode = audioContext.createGain();
+
+gainNode.gain.value = 0.8; // Volume
+
+
+// Collega i nodi
+
+source.connect(gainNode);
+
+gainNode.connect(audioContext.destination);
+
+
+// Riproduci il suono
+
+source.start();
+
+}
+
+
+
+// Colori per gli spicchi della ruota con una palette più vivace
+
+const colors = [
+
+"#7C4DFF", // primary
+
+"#FF4081", // secondary
+
+"#18FFFF", // accent
+
+"#651FFF",
+
+"#F50057",
+
+"#00E5FF",
+
+"#304FFE",
+
+"#C51162",
+
+"#64FFDA",
+
+"#6200EA",
+
+"#D50000",
+
+"#1DE9B6",
+
+"#3D5AFE",
+
+"#FF1744",
+
+"#00B8D4",
+
+"#536DFE",
+
+"#FF5252",
+
+"#00BFA5",
+
+"#8C9EFF",
+
+"#FF6E40",
+
+];
+
+
+
+// Array per memorizzare i nomi
+
+let names = [];
+
+// Flag per controllare se la ruota sta girando
+
+let isSpinning = false;
+
+// Vincitore corrente
+
+let currentWinner = "";
+
+
+
+// Costanti e variabili per la ruota
+
+const PI = Math.PI;
+
+const TAU = 2 * PI;
+
+let ang = 0; // Angolo in radianti
+
+let angVel = 0; // Velocità angolare
+
+const friction = 0.981; // Attrito: 0.995=leggero, 0.99=medio, 0.98=forte
+
+let isRotating = false;
+
+let currentSector = null;
+
+let wheelCtx = null;
+
+let wheelCanvas = null;
+
+
+
+// Inizializza canvas per la ruota
+
+function initWheel() {
+
+wheelCanvas = document.getElementById("wheel");
+
+wheelCtx = wheelCanvas.getContext("2d");
+
+
+
+// Aggiorna le dimensioni del canvas
+
+const containerWidth =
+
+document.querySelector(".wheel-container").offsetWidth;
+
+wheelCanvas.width = containerWidth;
+
+wheelCanvas.height = containerWidth;
+
+
+
+// Inizializza l'animazione
+
+requestAnimationFrame(animateWheel);
+
+}
+
+
+
+// Funzione per disegnare uno spicchio della ruota
+
+function drawSector(label, i, total) {
+
+const arc = TAU / total;
+
+const ang = arc * i;
+
+const color = colors[i % colors.length];
+
+
+
+const ctx = wheelCtx;
+
+const rad = ctx.canvas.width / 2;
+
+
+
+// Disegna lo spicchio colorato
+
+ctx.save();
+
+ctx.beginPath();
+
+ctx.fillStyle = color;
+
+ctx.moveTo(rad, rad);
+
+ctx.arc(rad, rad, rad, ang, ang + arc);
+
+ctx.lineTo(rad, rad);
+
+ctx.fill();
+
+
+
+// Aggiungi un bordo tra gli spicchi
+
+ctx.lineWidth = 2;
+
+ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+
+ctx.beginPath();
+
+ctx.moveTo(rad, rad);
+
+ctx.arc(rad, rad, rad, ang, ang + arc);
+
+ctx.lineTo(rad, rad);
+
+ctx.stroke();
+
+
+
+// Aggiungi un effetto di brillantezza
+
+const gradient = ctx.createRadialGradient(rad, rad, 0, rad, rad, rad);
+
+gradient.addColorStop(0, "rgba(255, 255, 255, 0.2)");
+
+gradient.addColorStop(0.5, "rgba(255, 255, 255, 0)");
+
+gradient.addColorStop(1, "rgba(0, 0, 0, 0.1)");
+
+
+
+ctx.globalCompositeOperation = "overlay";
+
+ctx.fillStyle = gradient;
+
+ctx.beginPath();
+
+ctx.moveTo(rad, rad);
+
+ctx.arc(rad, rad, rad, ang, ang + arc);
+
+ctx.lineTo(rad, rad);
+
+ctx.fill();
+
+ctx.globalCompositeOperation = "source-over";
+
+
+
+// Disegna il testo
+
+ctx.translate(rad, rad);
+
+ctx.rotate(ang + arc / 2);
+
+ctx.textAlign = "right";
+
+ctx.fillStyle = "#ffffff";
+
+ctx.font = "bold 16px 'Montserrat', sans-serif";
+
+ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+
+ctx.shadowBlur = 3;
+
+ctx.shadowOffsetX = 1;
+
+ctx.shadowOffsetY = 1;
+
+ctx.fillText(label, rad - 30, 6);
+
+ctx.restore();
+
+}
+
+
+
+// Funzione per aggiornare la ruota
+
+function updateWheel() {
+
+if (!wheelCtx) {
+
+initWheel();
+
+}
+
+
+
+const ctx = wheelCtx;
+
+const rad = ctx.canvas.width / 2;
+
+
+
+// Pulisci il canvas
+
+ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+
+
+if (names.length === 0) {
+
+return;
+
+}
+
+
+
+// Disegna tutti gli spicchi
+
+names.forEach((name, i) => {
+
+drawSector(name, i, names.length);
+
+});
+
+
+
+// Disegna un cerchio centrale
+
+ctx.save();
+
+ctx.beginPath();
+
+ctx.arc(rad, rad, rad * 0.15, 0, TAU);
+
+ctx.fillStyle = "#303f9f";
+
+ctx.fill();
+
+ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+
+ctx.lineWidth = 3;
+
+ctx.stroke();
+
+ctx.restore();
+
+
+
+// Aggiorna il pulsante SPIN
+
+const spinButton = document.getElementById("spin");
+
+if (currentSector && isRotating) {
+
+spinButton.textContent = currentSector;
+
+spinButton.style.background =
+
+colors[names.indexOf(currentSector) % colors.length];
+
+} else {
+
+spinButton.textContent = "SPIN";
+
+spinButton.style.background = "#3949ab";
+
+}
+
+}
+
+
+
+// Funzione per calcolare l'indice del settore corrente
+
+function getCurrentSector() {
+
+if (names.length === 0) return null;
+
+const tot = names.length;
+
+const index = Math.floor(tot - (ang / TAU) * tot) % tot;
+
+return names[index];
+
+}
+
+
+
+// Funzione per animare la ruota
+
+function animateWheel() {
+
+if (isRotating) {
+
+angVel *= friction; // Diminuisci la velocità per simulare l'attrito
+
+
+
+// Ferma la ruota quando la velocità è abbastanza bassa
+
+if (angVel < 0.002) {
+
+angVel = 0;
+
+isRotating = false;
+
+
+
+// Quando la ruota si ferma, mostra il pop-up con il vincitore
+
+currentWinner = getCurrentSector();
+
+winnerNameEl.textContent = currentWinner;
+
+popupOverlay.classList.add("active");
+
+playWinSound(); // Riproduci il suono di vittoria
+
+shuffleBtn.disabled = false;
+
+
+
+// Aggiorna l'ultimo vincitore
+
+updateLastWinner(currentWinner);
+
+}
+
+
+
+ang += angVel; // Aggiorna l'angolo
+
+ang %= TAU; // Normalizza l'angolo
+
+}
+
+
+
+// Aggiorna il settore corrente
+
+currentSector = getCurrentSector();
+
+
+
+// Aggiorna la visualizzazione della ruota
+
+wheelCanvas.style.transform = `rotate(${ang - PI / 2}rad)`;
+
+updateWheel();
+
+
+
+// Continua l'animazione
+
+requestAnimationFrame(animateWheel);
+
+}
+
+
+
+// Funzione per aggiungere un nome
+
+function addName(name) {
+
+if (name.trim() === "") return;
+
+
+
+// Aggiungi il nome all'array
+
+names.push(name);
+
+
+
+// Aggiorna la lista dei nomi
+
+const nameTag = document.createElement("div");
+
+nameTag.className = "name-tag";
+
+nameTag.innerHTML = `
+
+<span>${name}</span>
+
+<button class="delete-btn" data-name="${name}">×</button>
+
+`;
+
+namesList.appendChild(nameTag);
+
+
+
+// Aggiorna la ruota
+
+updateWheel();
+
+}
+
+
+
+// Funzione per rimuovere un nome
+
+function removeName(name) {
+
+names = names.filter((n) => n !== name);
+
+updateWheel();
+
+
+
+// Aggiorna la lista dei nomi
+
+const nameTags = namesList.querySelectorAll(".name-tag");
+
+nameTags.forEach((tag) => {
+
+if (tag.querySelector("span").textContent === name) {
+
+tag.remove();
+
+}
+
+});
+
+}
+
+
+
+// Funzione per mischiare l'array dei nomi
+
+function shuffleNames() {
+
+for (let i = names.length - 1; i > 0; i--) {
+
+const j = Math.floor(Math.random() * (i + 1));
+
+[names[i], names[j]] = [names[j], names[i]];
+
+}
+
+updateWheel();
+
+}
+
+
+
+// Funzione per far girare la ruota
+
+function spinWheel() {
+
+if (isRotating || names.length < 1) return;
+
+
+
+isRotating = true;
+
+shuffleBtn.disabled = true;
+
+
+
+// Inizializza l'audio se non è già stato fatto e riproduci il suono
+
+if (!audioContext) {
+
+initAudio();
+
+}
+
+
+// Riproduci il suono di rotazione
+
+playSpinSound();
+
+
+
+// Imposta una velocità angolare casuale
+
+angVel = Math.random() * 0.2 + 0.25;
+
+}
+
+
+
+// Inizializza la ruota quando il documento è pronto
+
+window.addEventListener("resize", function () {
+
+// Ridimensiona il canvas se la finestra viene ridimensionata
+
+if (wheelCtx) {
+
+const containerWidth =
+
+document.querySelector(".wheel-container").offsetWidth;
+
+wheelCanvas.width = containerWidth;
+
+wheelCanvas.height = containerWidth;
+
+updateWheel();
+
+}
+
+});
+
+
+
+// Event Listeners
+
+
+
+// Aggiungi un nome quando viene inserito
+
+nameInput.addEventListener("keyup", function (e) {
+
+if (e.key === "Enter" && this.value.trim() !== "") {
+
+addName(this.value.trim());
+
+this.value = "";
+
+} else if (this.value.trim() !== "") {
+
+// Aggiungi automaticamente quando viene digitato qualcosa
+
+const currentValue = this.value.trim();
+
+
+
+// Timeout per evitare di aggiungere più volte lo stesso nome
+
+clearTimeout(this.timer);
+
+this.timer = setTimeout(() => {
+
+if (this.value.trim() === currentValue) {
+
+addName(currentValue);
+
+this.value = "";
+
+}
+
+}, 1500); // Aggiungi dopo 1.5 secondi di inattività
+
+}
+
+});
+
+
+
+// Rimuovi un nome quando si fa clic sul pulsante di eliminazione
+
+namesList.addEventListener("click", function (e) {
+
+if (e.target.classList.contains("delete-btn")) {
+
+const name = e.target.getAttribute("data-name");
+
+removeName(name);
+
+}
+
+});
+
+
+
+// Mischia i nomi quando si fa clic sul pulsante shuffle
+
+shuffleBtn.addEventListener("click", shuffleNames);
+
+
+
+// Gira la ruota quando si fa clic sul pulsante SPIN
+
+document.getElementById("spin").addEventListener("click", spinWheel);
+
+
+
+// Chiudi il popup quando si fa clic sul pulsante di chiusura
+
+closePopupBtn.addEventListener("click", function () {
+
+popupOverlay.classList.remove("active");
+
+});
+
+
+
+// Rimuovi il vincitore e chiudi il popup
+
+removeWinnerBtn.addEventListener("click", function () {
+
+popupOverlay.classList.remove("active");
+
+removeName(currentWinner);
+
+});
+
+
+
+// Funzione per aggiornare l'ultimo vincitore
+
+function updateLastWinner(winner) {
+
+if (!winner) return;
+
+
+
+lastWinnerDisplay.innerHTML = `<span>${winner}</span>`;
+
+lastWinnerDisplay.classList.add("has-winner");
+
+
+
+// Aggiungi un po' di effetto
+
+lastWinnerDisplay.style.transform = "scale(1.05)";
+
+setTimeout(() => {
+
+lastWinnerDisplay.style.transform = "scale(1)";
+
+}, 300);
+
+}
+
+
+
+// Inizializza la ruota e aggiungi nomi di esempio
+
+initWheel();
+
+addName("Alex");
+
+});
+
+</script>
+
+</body>
+
+</html>

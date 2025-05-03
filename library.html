@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Libreria Giochi - The Guild Hall</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ========== VARIABILI ========== */
+    :root {
+      --color-bg1: rgb(15, 2, 40);
+      --color-bg2: rgb(0, 25, 102);
+      --color1: 68, 113, 255;
+      --color2: 251, 74, 255;
+      --color3: 40, 220, 255;
+      --color4: 255, 50, 120;
+      --color5: 255, 180, 50;
+      --color-interactive: 140, 100, 255;
+      --circle-size: 80%;
+      --blending: hard-light;
+      --primary-color: #00f0ff; /* Cyan */
+      --secondary-color: #ff00c8; /* Magenta */
+      --accent-color: #ffbb00; /* Yellow/Orange */
+      --text-neon: 0 0 8px rgba(0, 240, 255, 0.8), 0 0 15px rgba(0, 240, 255, 0.5), 0 0 25px rgba(0, 240, 255, 0.3);
+      --text-glow: 0 0 5px rgba(255, 255, 255, 0.6);
+      --font-family: 'Poppins', sans-serif;
+      --notch-bg: rgba(10, 15, 30, 0.95);
+      --notch-handle-bg: var(--primary-color);
+      --notch-handle-text: var(--color-bg1);
+      --notch-title-color: var(--accent-color);
+      --notch-text-color: #ccc;
+      --notch-button-bg: var(--secondary-color);
+      --notch-button-hover-bg: #ff33db;
+      --notch-border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* ========== RESET + BASE ========== */
+     * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
+     html { scroll-behavior: smooth; }
+     body { display: flex; flex-direction: column; align-items: center; min-height: 100vh; position: relative; background: linear-gradient(40deg, var(--color-bg1), var(--color-bg2)); overflow-x: hidden; color: white; }
+
+    /* Stile base per bottoni/link */
+     .button-like, button, a.button-link { cursor: pointer; border: none; outline: none; border-radius: 8px; font-weight: 600; transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; padding: 0.7rem 1.3rem; font-size: 1rem; color: white; background-color: var(--secondary-color); box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3); text-align: center; }
+     .button-like:hover, button:hover, a.button-link:hover { filter: brightness(1.15); transform: translateY(-2px); box-shadow: 0 5px 12px rgba(0, 0, 0, 0.4); }
+     .button-like:active, button:active, a.button-link:active { transform: scale(0.98) translateY(0); }
+     .button-like i, button i, a.button-link i { line-height: 1; }
+
+    /* ========== BACKGROUND DINAMICO + PARTICELLE + ANIMAZIONI ========== */
+    .gradient-bg { width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; z-index: -1; overflow: hidden; }
+    .gradient-bg .gradients-container { filter: blur(50px); width: 100%; height: 100%; }
+    .gradient-bg .g1, .gradient-bg .g2, .gradient-bg .g3, .gradient-bg .g4, .gradient-bg .g5, .gradient-bg .interactive { position: absolute; background: radial-gradient(circle at center, rgba(var(--color1), 0.8) 0, rgba(var(--color1), 0) 50%) no-repeat; mix-blend-mode: var(--blending); width: var(--circle-size); height: var(--circle-size); opacity: 1; border-radius: 50%; }
+    .g1 { top: calc(50% - var(--circle-size) / 2); left: calc(50% - var(--circle-size) / 2); animation: moveVertical 30s ease infinite; }
+    .g2 { background: radial-gradient(circle at center, rgba(var(--color2), 0.8) 0, rgba(var(--color2), 0) 50%); animation: moveInCircle 20s reverse infinite; transform-origin: calc(50% - 400px); }
+    .g3 { background: radial-gradient(circle at center, rgba(var(--color3), 0.8) 0, rgba(var(--color3), 0) 50%); animation: moveInCircle 40s linear infinite; transform-origin: calc(50% + 400px); top: calc(50% - var(--circle-size) / 2 + 200px); left: calc(50% - var(--circle-size) / 2 - 500px); }
+    .g4 { background: radial-gradient(circle at center, rgba(var(--color4), 0.8) 0, rgba(var(--color4), 0) 50%); animation: moveHorizontal 40s ease infinite; transform-origin: calc(50% - 200px); opacity: 0.7; }
+    .g5 { background: radial-gradient(circle at center, rgba(var(--color5), 0.8) 0, rgba(var(--color5), 0) 50%); animation: moveInCircle 25s ease-in-out infinite; transform-origin: calc(50% - 800px) calc(50% + 200px); width: calc(var(--circle-size) * 1.5); height: calc(var(--circle-size) * 1.5); top: calc(50% - var(--circle-size)); left: calc(50% - var(--circle-size)); }
+    .interactive { background: radial-gradient(circle at center, rgba(var(--color-interactive), 0.6) 0, rgba(var(--color-interactive), 0) 60%); opacity: 0.6; width: 100%; height: 100%; top: -50%; left: -50%; transition: top 0.1s ease-out, left 0.1s ease-out; border-radius: 50%; }
+    .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    .particle { position: absolute; background-color: rgba(255, 255, 255, 0.7); border-radius: 50%; pointer-events: none; animation: floatParticle 20s linear infinite; }
+    @keyframes moveInCircle { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes moveVertical { 0%, 100% { transform: translateY(-30%); } 50% { transform: translateY(30%); } }
+    @keyframes moveHorizontal { 0%, 100% { transform: translateX(-40%) translateY(-15%); } 50% { transform: translateX(40%) translateY(15%); } }
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
+    @keyframes floatParticle { 0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.7; } 50% { transform: translateY(-100px) translateX(20px) rotate(180deg); opacity: 0.3; } 100% { transform: translateY(0) translateX(0) rotate(360deg); opacity: 0.7; } }
+    @keyframes shine { 0% { left: -100%; } 50% { left: 100%; } 100% { left: 100%; } }
+
+    /* ========== Contenuto Libreria ========== */
+    .library-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 1200px; min-height: 100vh; padding: 40px 20px 120px 20px; z-index: 10; }
+    .library-header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding: 15px 20px; background-color: rgba(15, 10, 30, 0.7); border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); flex-wrap: wrap; gap: 15px; }
+    .library-header h1 { font-size: 2.2rem; color: white; font-weight: 700; text-shadow: var(--text-neon); margin: 0; text-align: left; }
+    #back-to-home-btn { background-color: var(--primary-color); color: var(--color-bg1); }
+
+    /* Griglia Giochi Migliorata */
+    .full-library-grid {
+      display: grid;
+      /* Aumentato minmax per card più grandi */
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 30px; /* Aumentato gap */
+      width: 100%;
+    }
+
+    /* Stili Game Card Migliorati */
+    .game-card {
+      background: rgba(20, 30, 60, 0.75); /* Leggermente meno trasparente */
+      border-radius: 15px;
+      padding: 20px; /* Padding uniforme */
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      position: relative;
+      overflow: hidden;
+      /* Layout Flex per organizzare contenuto */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between; /* Spazio tra elementi */
+      align-items: center; /* Centra elementi orizzontalmente */
+      min-height: 250px; /* Altezza minima per coerenza */
+    }
+    .game-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      background: rgba(30, 45, 80, 0.9);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 240, 255, 0.3);
+      border-color: rgba(0, 240, 255, 0.4);
+    }
+    .game-card::before { /* Effetto luce radiale */
+       content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0, 240, 255, 0.1) 0%, transparent 70%); opacity: 0; transition: opacity 0.4s ease; z-index: 0;
+    }
+    .game-card:hover::before { opacity: 1; }
+
+    .game-card-content { /* Contenitore per immagine e titolo */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-grow: 1; /* Occupa spazio disponibile */
+        width: 100%;
+        z-index: 1; /* Sopra ::before */
+    }
+
+    .game-card img {
+      width: 70px; /* Immagine leggermente più grande */
+      height: 70px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .game-card:hover img {
+      transform: scale(1.15) rotate(3deg);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+    .game-card h3 {
+      font-size: 1.1rem; /* Titolo più grande */
+      color: white;
+      margin: 0 0 15px 0; /* Spazio sotto il titolo */
+      font-weight: 600;
+      text-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+      line-height: 1.3;
+    }
+
+    .play-game-btn { /* Stile bottone "Gioca Ora" */
+        margin-top: auto; /* Spinge il bottone in basso */
+        padding: 0.6rem 1.5rem; /* Padding specifico */
+        font-size: 0.95rem;
+        background-color: var(--primary-color);
+        color: var(--color-bg1); /* Testo scuro su cyan */
+        width: 80%; /* Larghezza relativa */
+        max-width: 150px; /* Max larghezza */
+        z-index: 1; /* Sopra ::before */
+    }
+     .play-game-btn:hover {
+         background-color: var(--primary-color); /* Mantiene colore base */
+         filter: brightness(1.2); /* Lo rende più luminoso */
+         color: var(--color-bg1);
+     }
+
+
+    /* Messaggio No Giochi */
+    .no-games-message { grid-column: 1 / -1; text-align: center; color: #aaa; font-style: italic; padding: 40px; background-color: rgba(20, 30, 60, 0.5); border-radius: 10px; }
+
+    /* ========== Donation Notch ========== */
+    .donation-notch { position: fixed; bottom: 0; left: 0; right: 0; background-color: var(--notch-bg); backdrop-filter: blur(5px); padding: 0.8rem 1rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.5); z-index: 999; transform: translateY(100%); border-top: 1px solid var(--notch-border-color); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    .donation-notch.visible, .donation-notch:hover { transform: translateY(0); }
+    .donation-handle { position: absolute; top: -28px; left: 50%; transform: translateX(-50%); background-color: var(--notch-handle-bg); padding: 6px 25px; border-radius: 10px 10px 0 0; cursor: pointer; box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.3); color: var(--notch-handle-text); font-weight: bold; font-size: 0.9rem; white-space: nowrap; transition: background-color 0.2s ease; }
+    .donation-handle:hover { filter: brightness(1.1); }
+    .donation-content { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 1rem; gap: 1rem; }
+    .donation-text { flex: 1; color: var(--notch-text-color); margin-right: 1rem; font-size: 0.95rem; }
+    .donation-text h3 { color: var(--notch-title-color); margin-bottom: 0.3rem; font-size: 1.1rem; text-shadow: 0 0 5px var(--notch-title-color); }
+    .donation-buttons { display: flex; gap: 0.8rem; flex-shrink: 0; }
+    /* .donate-btn usa .button-like */
+    .donate-btn.paypal { background-color: #0079c1; color: white; }
+    .donate-btn.paypal:hover { background-color: #005ea6; filter: brightness(1); }
+
+    /* ========== RESPONSIVE ========== */
+     @media (max-width: 992px) { /* Aggiunto breakpoint per griglia più larga */
+         .full-library-grid {
+             grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+             gap: 25px;
+         }
+     }
+     @media (max-width: 768px) {
+         .library-wrapper { padding: 30px 20px 150px 20px; max-width: 95%;}
+         .library-header { padding: 12px 15px; margin-bottom: 30px; }
+         .library-header h1 { font-size: 1.8rem; }
+         .full-library-grid {
+             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adattato per schermi medi */
+             gap: 20px;
+         }
+         .game-card { min-height: 230px; padding: 15px;} /* Altezza minima ridotta */
+         .game-card img { width: 60px; height: 60px; }
+         .game-card h3 { font-size: 1rem; }
+         .play-game-btn { font-size: 0.9rem; padding: 0.5rem 1.2rem; }
+
+         .donation-notch { padding: 0.6rem 0.8rem; }
+         .donation-handle { top: -25px; font-size: 0.85rem; padding: 5px 20px; }
+         .donation-content { flex-direction: column; gap: 1rem; padding: 0.5rem; text-align: center; }
+         .donation-text { margin-right: 0; font-size: 0.9rem; }
+         .donation-text h3 { font-size: 1rem; }
+         .donation-buttons { justify-content: center; width: 100%; gap: 0.6rem; }
+         .donate-btn { font-size: 0.9rem; padding: 0.5rem 1rem; }
+     }
+     @media (max-width: 480px) {
+          .library-wrapper { padding: 20px 15px 160px 15px; }
+          .library-header { flex-direction: column; text-align: center; }
+          .library-header h1 { margin-bottom: 15px; font-size: 1.6rem;}
+          #back-to-home-btn { width: 100%; max-width: 250px;}
+          .full-library-grid {
+              grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Ancora più piccole */
+              gap: 15px;
+          }
+          .game-card { padding: 15px 10px; border-radius: 12px; min-height: 210px;}
+          .game-card img { width: 50px; height: 50px; margin-bottom: 10px; }
+          .game-card h3 { font-size: 0.9rem; }
+          .play-game-btn { font-size: 0.85rem; padding: 0.5rem 1rem; width: 90%; }
+
+          .donation-text { font-size: 0.85rem; }
+          .donation-text h3 { font-size: 0.95rem; }
+          .donate-btn { font-size: 0.85rem; padding: 0.5rem 0.8rem; gap: 0.4rem; }
+          .donation-buttons { gap: 0.5rem; }
+     }
+  </style>
+</head>
+
+<body>
+  <div class="gradient-bg">
+    <div class="gradients-container">
+      <div class="g1"></div> <div class="g2"></div> <div class="g3"></div>
+      <div class="g4"></div> <div class="g5"></div> <div class="interactive"></div>
+    </div>
+  </div>
+  <div class="particles" id="particles"></div>
+
+  <div class="library-wrapper">
+      <div class="library-header">
+           <h1>Libreria Giochi</h1>
+           <a href="index.html" id="back-to-home-btn" class="button-link">
+               <i class="fas fa-arrow-left"></i> Torna alla Home
+           </a>
+      </div>
+      <div class="full-library-grid" id="libraryGrid">
+          </div>
+  </div>
+
+   <div class="donation-notch" id="donation-notch">
+      <div class="donation-handle" id="donation-handle">Supportami</div>
+      <div class="donation-content">
+        <div class="donation-text">
+          <h3>Aiutami a migliorare The Guild Hall!</h3>
+          <p>Il tuo contributo mi aiuterà ad aggiungere giochi e a migliorare quelli esistenti.</p>
+        </div>
+        <div class="donation-buttons">
+          <a
+            href="https://paypal.me/weebstorm?country.x=IT&locale.x=it_IT" /* SOSTITUISCI LINK */
+            target="_blank"
+            rel="noopener noreferrer"
+            class="donate-btn paypal button-link"
+          >
+            <i class="fab fa-paypal"></i> PayPal
+          </a>
+        </div>
+      </div>
+    </div>
+
+  <script>
+    // --- DATI GIOCHI ---
+    const giochi = [
+        // Aggiungi qui altri giochi se necessario, verranno ordinati
+        { name: "WHEEL", link: "wheel.html", icon: "wheel.png" },
+        { name: "SAPIENTIX", link: "sapientix.html", icon: "sapientix.png" }
+    ];
+
+    // --- ELEMENTI DOM ---
+    const libraryGrid = document.getElementById('libraryGrid');
+    const particlesContainer = document.getElementById('particles');
+    const interactiveBgElement = document.querySelector('.interactive');
+    const donationNotch = document.getElementById('donation-notch');
+    const donationHandle = document.getElementById('donation-handle');
+
+    // --- FUNZIONI ---
+    function debounce(func, wait) { /* ... */ }
+    function createParticles() { /* ... */
+        particlesContainer.innerHTML = ''; const particleCount = 40;
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div'); particle.className = 'particle';
+            const size = Math.random() * 2.5 + 0.5; particle.style.width = `${size}px`; particle.style.height = `${size}px`;
+            const posX = Math.random() * window.innerWidth; const posY = Math.random() * window.innerHeight; particle.style.left = `${posX}px`; particle.style.top = `${posY}px`;
+            particle.style.opacity = Math.random() * 0.4 + 0.1;
+            const hue = 180 + Math.random() * 60; particle.style.backgroundColor = `hsl(${hue}, 90%, 75%)`;
+            const duration = Math.random() * 30 + 15; const delay = Math.random() * duration; particle.style.animation = `floatParticle ${duration}s linear ${delay}s infinite alternate`;
+            particlesContainer.appendChild(particle);
+        }
+     }
+     function setupDonationNotch() { /* ... */
+        if (donationHandle && donationNotch) {
+           donationHandle.addEventListener('click', () => { donationNotch.classList.toggle('visible'); });
+           document.addEventListener('click', (event) => { if (!donationNotch.contains(event.target) && !donationHandle.contains(event.target)) { donationNotch.classList.remove('visible'); } });
+        } else { console.warn("Elementi Donation Notch non trovati."); }
+     }
+
+     // Funzione per popolare la griglia della libreria (MIGLIORATA + ORDINAMENTO)
+     function populateLibraryGrid() {
+         if (!libraryGrid) { console.error("Elemento #libraryGrid non trovato!"); return; }
+         libraryGrid.innerHTML = ''; // Pulisci
+
+         if (giochi.length === 0) { libraryGrid.innerHTML = '<p class="no-games-message">Nessun gioco disponibile al momento.</p>'; return; }
+
+         // --- ORDINAMENTO ALFABETICO ---
+         giochi.sort((a, b) => a.name.localeCompare(b.name));
+         // -----------------------------
+
+         giochi.forEach(gioco => {
+             const card = document.createElement('div');
+             card.classList.add('game-card');
+             // Rimosso data-game e click listener dalla card intera
+
+             // Contenuto Card
+             card.innerHTML = `
+                 <div class="game-card-content">
+                     <img src="${gioco.icon}" alt="${gioco.name}">
+                     <h3>${gioco.name}</h3>
+                     </div>
+                 <a href="${gioco.link || '#'}" class="play-game-btn button-like" ${!gioco.link ? 'style="pointer-events: none; opacity: 0.5;"' : ''}>
+                     Gioca Ora
+                 </a>
+             `;
+             // Il link è gestito direttamente dall'ancora <a> ora.
+             // Se il link non esiste, il bottone viene reso non cliccabile (opzionale)
+
+             libraryGrid.appendChild(card);
+         });
+     }
+
+    // --- EVENT LISTENERS ---
+    document.addEventListener('mousemove', function(e) { /* ... */
+        window.requestAnimationFrame(() => { if (interactiveBgElement) { const x = e.clientX; const y = e.clientY; const moveX = (x / window.innerWidth) * 100 - 50; const moveY = (y / window.innerHeight) * 100 - 50; interactiveBgElement.style.transform = `translate(${moveX}%, ${moveY}%)`; } });
+     });
+    window.addEventListener('resize', debounce(createParticles, 500));
+
+    // --- INIZIALIZZAZIONE ---
+    createParticles();
+    setupDonationNotch();
+    populateLibraryGrid();
+
+  </script>
+</body>
+</html>
