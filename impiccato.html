@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangman - Streamer Edition V4</title> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+   /* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Orbitron:wght@500;700&display=swap');
+
+/* Reset base e Variabili Colore Neon */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --bg-color: #1a1a2e;
+    --primary-glow: #0ff; /* Ciano */
+    --secondary-glow: #f0f; /* Magenta */
+    --tertiary-glow: #a0f; /* Viola */
+    --text-color: #e0e0e0;
+    --text-darker: #a0a0ae;
+    --error-color: #ff4d4d;
+    --success-color: #4dff88;
+    --border-color: rgba(0, 255, 255, 0.3);
+    --glow-shadow-primary: 0 0 5px var(--primary-glow), 0 0 10px var(--primary-glow), 0 0 15px var(--primary-glow);
+    --glow-shadow-secondary: 0 0 5px var(--secondary-glow), 0 0 10px var(--secondary-glow);
+    --font-family: 'Poppins', sans-serif;
+    --font-title: 'Orbitron', sans-serif;
+    /* Colori Notch */
+    --notch-bg: rgba(10, 10, 25, 0.95);
+    --notch-handle-bg: var(--secondary-glow);
+    --notch-handle-text: var(--bg-color);
+    --notch-title-color: var(--primary-glow);
+    --notch-text-color: var(--text-darker);
+    --notch-button-bg: var(--tertiary-glow);
+    --notch-button-hover-bg: #c0f;
+    --notch-border-color: rgba(170, 0, 255, 0.3);
+}
+
+html { height: 100%; }
+
+body {
+    font-family: var(--font-family);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background-color: var(--bg-color);
+    background: linear-gradient(-45deg, #1a1a2e, #2a1a3e, #1a2a4e, #1a1a2e);
+	background-size: 400% 400%;
+	animation: gradientBG 15s ease infinite;
+    color: var(--text-color);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+@keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+
+/* Contenitore Globale */
+.global-container {
+    max-width: 800px;
+    width: 95%;
+    padding: 40px 50px;
+    border-radius: 15px;
+    position: relative;
+    margin: 0 auto;
+    background-color: rgba(26, 26, 46, 0.85);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.2), inset 0 0 10px rgba(0, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    z-index: 5;
+}
+
+/* Schermate */
+.screen { display: none; animation: screenFadeIn 0.7s ease-out; }
+.screen.active-screen { display: block; }
+@keyframes screenFadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+/* Stile Bottone Iconico (Home) */
+.button-iconic {
+    position: absolute;
+    top: 20px;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-darker);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.3em;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 15;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    padding: 0;
+    margin: 0;
+    visibility: hidden; /* Nascosto di default */
+    opacity: 0;
+}
+.button-iconic:not(.hidden) { /* Mostra quando non ha la classe hidden */
+    visibility: visible;
+    opacity: 1;
+}
+.button-iconic.top-right { right: 20px; }
+.button-iconic:hover {
+    background-color: rgba(0, 255, 255, 0.1);
+    color: var(--primary-glow);
+    border-color: var(--border-color);
+    transform: scale(1.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4), var(--glow-shadow-primary);
+}
+.button-iconic i { line-height: 1; }
+
+/* Titoli e Testi */
+.game-title { font-family: var(--font-title); font-size: clamp(2.5em, 8vw, 4em); text-align: center; color: var(--primary-glow); text-shadow: var(--glow-shadow-primary); margin-bottom: 10px; letter-spacing: 2px; }
+.sub-title { text-align: center; color: var(--secondary-glow); font-family: var(--font-title); font-size: 1.8em; margin-bottom: 30px; text-shadow: var(--glow-shadow-secondary); }
+h2 { font-size: 1.6em; margin-bottom: 20px; text-align: center; color: var(--primary-glow);}
+p.instructions { text-align: center; margin-bottom: 25px; font-size: 1.1em; color: var(--text-darker);}
+p.input-hint { font-size: 0.9em; color: var(--text-darker); margin-bottom: 20px; text-align: center;}
+.error-message { color: var(--error-color); font-weight: 600; margin-top: 15px; font-size: 0.95em; text-align: center; text-shadow: 0 0 5px var(--error-color);}
+
+/* Input Area (Streamer) */
+.word-input-area { display: flex; margin-bottom: 10px; position: relative; }
+#word-input { flex-grow: 1; padding: 15px 60px 15px 20px; border-radius: 8px; font-size: 1.1em; font-family: inherit; border: 1px solid var(--border-color); background-color: rgba(0, 0, 0, 0.3); color: var(--text-color); transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+#word-input:focus { outline: none; border-color: var(--primary-glow); box-shadow: 0 0 10px rgba(0, 255, 255, 0.3); }
+#toggle-visibility-button { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-darker); font-size: 1.5em; cursor: pointer; padding: 5px; line-height: 1; transition: color 0.3s ease; }
+#toggle-visibility-button:hover { color: var(--primary-glow); }
+#word-input.input-error-shake { animation: shakeHorizontalInput 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+@keyframes shakeHorizontalInput { 10%, 90% { transform: translate3d(-2px, 0, 0); } 20%, 80% { transform: translate3d(3px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-5px, 0, 0); } 40%, 60% { transform: translate3d(5px, 0, 0); } }
+
+/* Bottoni Generali (escluso home) */
+button:not(.button-iconic) { padding: 14px 30px; font-size: 1.1em; font-weight: 600; font-family: var(--font-title); border: 1px solid var(--primary-glow); border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease, transform 0.15s ease, box-shadow 0.3s ease; margin: 10px auto; display: block; background-color: transparent; color: var(--primary-glow); text-shadow: 0 0 5px rgba(0, 255, 255, 0.7); box-shadow: inset 0 0 5px rgba(0, 255, 255, 0.2); letter-spacing: 1px; }
+button:not(.button-iconic):hover:not(:disabled) { background-color: rgba(0, 255, 255, 0.15); color: #fff; transform: scale(1.03); box-shadow: var(--glow-shadow-primary), inset 0 0 8px rgba(0, 255, 255, 0.3); }
+button:not(.button-iconic):active:not(:disabled) { transform: scale(0.98); }
+button:disabled { border-color: var(--text-darker) !important; color: var(--text-darker) !important; cursor: not-allowed !important; opacity: 0.5 !important; box-shadow: none !important; text-shadow: none !important; transform: none !important; background-color: transparent !important; }
+button.button-new-word { border-color: var(--secondary-glow); color: var(--secondary-glow); text-shadow: 0 0 5px rgba(255, 0, 255, 0.7); box-shadow: inset 0 0 5px rgba(255, 0, 255, 0.2); }
+button.button-new-word:hover:not(:disabled) { background-color: rgba(255, 0, 255, 0.15); color: #fff; box-shadow: var(--glow-shadow-secondary), inset 0 0 8px rgba(255, 0, 255, 0.3); }
+
+
+/* --- Schermata Gioco --- */
+.game-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 10px 15px; font-size: 1.1em; border-radius: 8px; background-color: rgba(0,0,0, 0.2); border: 1px solid var(--border-color); font-weight: 600; }
+#errors-count { color: var(--error-color); text-shadow: 0 0 5px var(--error-color);}
+
+/* SVG Impiccato */
+.hangman-visual { margin: 20px auto 30px auto; min-height: 150px; text-align: center; max-width: 200px; }
+#hangman-svg { width: 100%; height: auto; max-height: 160px; }
+.gallows { stroke: var(--tertiary-glow); stroke-width: 5; stroke-linecap: round; filter: drop-shadow(0 0 3px var(--tertiary-glow));}
+.hangman-part { stroke: var(--secondary-glow); stroke-width: 4.5; stroke-linecap: round; fill: none; opacity: 0; transform-origin: center center; transition: opacity 0.5s ease-in-out; filter: drop-shadow(0 0 4px var(--secondary-glow)); }
+.hangman-part.visible { opacity: 1; }
+
+
+/* Display Parola/Frase */
+.word-display-container {
+    width: 100%;
+    overflow-x: hidden; /* Nasconde overflow orizzontale */
+    overflow-y: hidden;
+    margin: 40px 0;
+    position: relative;
+}
+.word-display {
+    font-size: clamp(2em, 5vw, 3.2em); /* Dimensione base */
+    letter-spacing: 10px; /* Spaziatura base */
+    word-spacing: normal; /* Spaziatura parole base */
+    line-height: 1.4; /* Aumenta leggermente per wrap */
+    min-height: 60px;
+    display: block; /* Cambia a block per permettere text-align */
+    text-align: center; /* Centra il testo */
+    font-weight: 600;
+    font-family: var(--font-title);
+    white-space: normal; /* <<<<<<<<<<<< PERMETTE DI ANDARE A CAPO */
+    padding: 0 5px; /* Leggero padding laterale */
+    width: 100%; /* Occupa tutta la larghezza del container */
+    transition: letter-spacing 0.3s ease, word-spacing 0.3s ease, font-size 0.3s ease; /* Transizioni per JS */
+}
+.letter-placeholder { border-bottom: 4px solid var(--primary-glow); margin: 0 5px; min-width: 25px; height: 1.3em; display: inline-block; text-transform: uppercase; line-height: 1.3; transition: color 0.3s ease, border-color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease; text-align: center; color: transparent; vertical-align: baseline;}
+.letter-placeholder.space, .letter-placeholder.punctuation { border-bottom-color: transparent !important; color: transparent; min-width: 15px; margin: 0 2px; }
+.letter-placeholder.guessed { border-bottom-color: transparent !important; color: var(--primary-glow); text-shadow: var(--glow-shadow-primary); transform: translateY(-3px); }
+.letter-placeholder.revealed { border-bottom-color: transparent !important; color: var(--text-darker); text-shadow: none; }
+.letter-placeholder.revealed.space, .letter-placeholder.revealed.punctuation { color: transparent; }
+
+/* Area Messaggi */
+.message-area { margin: 25px 0; font-size: 1.4em; font-weight: 600; min-height: 35px; text-align: center; }
+.message-area.win { color: var(--success-color); text-shadow: 0 0 8px var(--success-color); animation: pulseSuccess 1.5s ease-out;}
+.message-area.loss { color: var(--error-color); text-shadow: 0 0 8px var(--error-color); }
+.message-area.info { color: var(--tertiary-glow); }
+.message-area.error { color: var(--error-color); }
+@keyframes pulseSuccess { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+
+/* Controlli Inferiori */
+.controls-bottom { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color); }
+.incorrect-info { text-align: center; margin-bottom: 20px; font-size: 1em; color: var(--text-darker); min-height: 1.5em; }
+#incorrect-letters { font-weight: 600; color: var(--error-color); letter-spacing: 4px; text-transform: uppercase; word-break: break-word; text-shadow: 0 0 3px var(--error-color); }
+
+/* Tastiera */
+.keyboard { margin: 20px 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.keyboard button { min-width: 55px; padding: 15px 10px; font-size: 1.3em; font-weight: 700; background-color: rgba(0, 255, 255, 0.05); border: 1px solid var(--border-color); color: var(--primary-glow); text-shadow: none; box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.1); margin: 0; flex-grow: 1; max-width: 65px; }
+.keyboard button:hover:not(:disabled) { background-color: rgba(0, 255, 255, 0.2); transform: translateY(-2px); box-shadow: var(--glow-shadow-primary), inset 0 0 10px rgba(0, 255, 255, 0.3); color: #fff; }
+.keyboard button:disabled { background-color: rgba(160, 160, 174, 0.1) !important; border-color: rgba(160, 160, 174, 0.3) !important; color: var(--text-darker) !important; opacity: 0.4 !important; box-shadow: none !important; text-shadow: none !important; transform: none !important; cursor: not-allowed !important;}
+
+
+/* Stili Notch Donazioni */
+.donation-notch { position: fixed; bottom: 0; left: 0; right: 0; background-color: var(--notch-bg); backdrop-filter: blur(8px); padding: 0.8rem 1.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.6); z-index: 1000; transform: translateY(100%); border-top: 1px solid var(--notch-border-color); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+.donation-notch.visible, .donation-notch:hover { transform: translateY(0); }
+.donation-handle { position: absolute; top: -28px; left: 50%; transform: translateX(-50%); background-color: var(--notch-handle-bg); padding: 6px 25px; border-radius: 10px 10px 0 0; cursor: pointer; box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.3), 0 0 10px var(--secondary-glow); color: var(--notch-handle-text); font-weight: bold; font-size: 0.9rem; white-space: nowrap; transition: background-color 0.2s ease, filter 0.2s ease; font-family: var(--font-title); letter-spacing: 0.5px; }
+.donation-handle:hover { filter: brightness(1.15); }
+.donation-content { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 1rem; gap: 1rem; }
+.donation-text { flex: 1; color: var(--notch-text-color); margin-right: 1rem; font-size: 0.95rem; }
+.donation-text h3 { color: var(--notch-title-color); margin-bottom: 0.3rem; font-size: 1.1rem; text-shadow: 0 0 8px var(--notch-title-color); font-weight: 600;}
+.donation-buttons { display: flex; gap: 0.8rem; flex-shrink: 0; }
+.donate-btn { cursor: pointer; border: none; outline: none; border-radius: 8px; font-weight: 600; transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; padding: 0.7rem 1.3rem; font-size: 1rem; color: white; background-color: var(--notch-button-bg); box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3), 0 0 8px var(--tertiary-glow); text-align: center; font-family: var(--font-family); margin: 0; }
+.donate-btn:hover { filter: brightness(1.15); transform: translateY(-2px); box-shadow: 0 5px 12px rgba(0, 0, 0, 0.4), 0 0 15px var(--tertiary-glow); }
+.donate-btn:active { transform: scale(0.98) translateY(0); }
+.donate-btn i { line-height: 1; margin-right: 5px;}
+
+
+/* Animazioni Feedback */
+.correct-guess-feedback { animation: popGlow 0.5s ease-out; }
+@keyframes popGlow { 0% { transform: scale(0.8) translateY(0); opacity: 0.8; } 50% { transform: scale(1.15) translateY(-3px); text-shadow: 0 0 15px var(--primary-glow), 0 0 25px var(--primary-glow); } 100% { transform: scale(1) translateY(-3px); opacity: 1; text-shadow: var(--glow-shadow-primary); } }
+#hangman-svg.incorrect-guess-feedback { animation: shakeGlow 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+@keyframes shakeGlow { 10%, 90% { transform: translate3d(-1px, 0, 0); filter: drop-shadow(0 0 6px var(--secondary-glow));} 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-3px, 0, 0); filter: drop-shadow(0 0 2px var(--secondary-glow));} 40%, 60% { transform: translate3d(3px, 0, 0); } 100% { filter: drop-shadow(0 0 4px var(--secondary-glow)); } }
+@keyframes bounceVictory { 0%, 100% { transform: translateY(-3px) scale(1); color: var(--primary-glow); text-shadow: var(--glow-shadow-primary); } 50% { transform: translateY(-10px) scale(1.15); color: var(--success-color); text-shadow: 0 0 15px var(--success-color), 0 0 25px var(--success-color); } }
+
+
+/* Media Query */
+@media (max-width: 768px) {
+    .global-container { padding: 30px 25px; }
+    /* Riduci font parola su schermi piccoli */
+    .word-display { letter-spacing: 8px; font-size: clamp(1.6em, 4vw, 2.5em); }
+    .letter-placeholder { min-width: 18px; margin: 0 3px;}
+    .keyboard button { min-width: calc(100% / 9 - 11px); font-size: 1em;} /* Font più piccolo tastiera */
+    .donation-notch { padding: 0.6rem 1rem; }
+    .donation-handle { top: -25px; font-size: 0.85rem; padding: 5px 20px; }
+    .donation-content { flex-direction: column; gap: 0.8rem; padding: 0.5rem; text-align: center; }
+    .donation-text { margin-right: 0; font-size: 0.9rem; }
+    .donation-text h3 { font-size: 1rem; }
+    .donation-buttons { justify-content: center; width: 100%; gap: 0.6rem; }
+    .donate-btn { font-size: 0.9rem; padding: 0.6rem 1.1rem; }
+    .button-iconic { width: 35px; height: 35px; font-size: 1.1em; top: 15px; right: 15px; }
+}
+@media (max-width: 600px) {
+    .global-container { padding: 25px 15px; }
+    h1.game-title { font-size: 2em; }
+    h2 { font-size: 1.5em; }
+    button:not(.button-iconic) { padding: 10px 18px; font-size: 1em; margin: 5px; }
+    .word-display { letter-spacing: 4px; font-size: clamp(1.2em, 5vw, 1.8em); } /* Ancora più piccolo */
+    .letter-placeholder { min-width: 15px; margin: 0 2px; border-bottom-width: 3px;}
+    .keyboard { gap: 5px; } /* Meno gap */
+    .keyboard button { min-width: calc(100% / 7 - 6px); padding: 9px 4px; font-size: 0.9em;} /* 7 tasti per riga, più piccoli */
+    .game-info { flex-direction: column; gap: 5px; align-items: center; font-size: 1em; }
+    .hangman-visual { min-height: 120px; max-width: 160px; margin: 20px auto;}
+    .message-area { font-size: 1.1em; margin: 15px 0;}
+    .donation-content { padding: 0.3rem; }
+    .donation-text h3 { font-size: 0.95rem; }
+    .donation-text p { font-size: 0.85rem; }
+    .donate-btn { font-size: 0.85rem; padding: 0.5rem 1rem;}
+    .button-iconic { width: 32px; height: 32px; font-size: 1em; top: 12px; right: 12px; }
+}
+
+
+/* Focus Visibile */
+*:focus-visible { outline: 2px solid var(--secondary-glow); outline-offset: 3px; border-radius: 4px; box-shadow: 0 0 10px var(--secondary-glow); }
+*:focus:not(:focus-visible) { outline: none; }
+    </style>
+</head>
+<body>
+
+    <div class="global-container">
+
+        <button id="home-button" class="button-iconic top-right" aria-label="Torna alla Home">
+            <i class="fas fa-home"></i>
+        </button>
+
+        <div id="screen-word-input" class="screen active-screen">
+            <h1 class="game-title">HANGMAN</h1>
+            <h2 class="sub-title">Streamer Setup</h2>
+            <p class="instructions">Inserisci la parola o frase segreta (ITA/ENG):</p>
+            <div class="word-input-area">
+                <input type="password" id="word-input" placeholder="Scrivi qui..." aria-label="Parola o frase segreta">
+                <button id="toggle-visibility-button" aria-label="Mostra/Nascondi parola">👁️</button>
+            </div>
+            <p class="input-hint">Minimo 3 caratteri (lettere, spazi, apostrofi).</p>
+            <button id="submit-word-button">Avvia Round!</button>
+            <p id="word-input-error" class="error-message" aria-live="assertive"></p>
+        </div>
+
+        <div id="screen-game" class="screen">
+             <div class="game-info">
+                 <span id="category-display" style="display: none;"></span>
+                 <span id="errors-count" aria-live="polite">Errori: 0 / 6</span>
+            </div>
+
+            <div class="hangman-visual" aria-label="Progresso impiccato">
+                 <div id="hangman-drawing">
+                     <svg id="hangman-svg" viewBox="0 0 100 120" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                        {/* SVG Hangman (identico a prima) */}
+                        <line class="gallows gallows-base" x1="10" y1="115" x2="90" y2="115"/> <line class="gallows gallows-stand" x1="30" y1="115" x2="30" y2="5"/> <line class="gallows gallows-top" x1="28" y1="5" x2="75" y2="5"/> <line class="gallows gallows-rope" x1="70" y1="5" x2="70" y2="25"/>
+                        <circle id="hg-head" class="hangman-part" cx="70" cy="40" r="15"/> <line id="hg-body" class="hangman-part" x1="70" y1="55" x2="70" y2="90"/> <line id="hg-arm-l" class="hangman-part" x1="70" y1="65" x2="50" y2="80"/> <line id="hg-arm-r" class="hangman-part" x1="70" y1="65" x2="90" y2="80"/> <line id="hg-leg-l" class="hangman-part" x1="70" y1="90" x2="55" y2="110"/> <line id="hg-leg-r" class="hangman-part" x1="70" y1="90" x2="85" y2="110"/>
+                    </svg>
+                 </div>
+            </div>
+
+            <div class="word-display-container">
+                <div class="word-display" id="word-display" aria-label="Parola o frase da indovinare"></div>
+            </div>
+            <div class="message-area" id="message-area" aria-live="assertive"></div>
+
+            <div class="controls-bottom">
+                <div class="incorrect-info">
+                    Lettere sbagliate: <span id="incorrect-letters">Nessuna</span>
+                </div>
+                <div class="keyboard" id="keyboard" role="group" aria-label="Tastiera virtuale"></div>
+                <button id="new-word-button" class="button-new-word" style="display: none;">Imposta Nuova Parola/Frase</button>
+            </div>
+        </div>
+
+    </div><div class="donation-notch" id="donation-notch">
+      <div class="donation-handle" id="donation-handle">Supportami</div>
+      <div class="donation-content">
+        <div class="donation-text">
+          <h3>Aiuta a migliorare il gioco!</h3>
+          <p>Il tuo supporto permette di aggiungere nuove funzionalità.</p>
+        </div>
+        <div class="donation-buttons">
+          <a
+            href="https://paypal.me/TUO_LINK_PAYPAL" /* <<< SOSTITUISCI QUESTO LINK! */
+            target="_blank"
+            rel="noopener noreferrer"
+            class="donate-btn paypal button-like"
+          >
+            <i class="fab fa-paypal"></i> PayPal
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+     document.addEventListener('DOMContentLoaded', () => {
+
+// --- CONFIGURAZIONE ---
+const CONFIG = {
+    maxErrors: 6,
+    wordMinLength: 3
+};
+
+// --- STATO DEL GIOCO ---
+let state = {
+    currentWord: '',
+    guessedLetters: [],
+    incorrectGuesses: [],
+    roundActive: false,
+};
+
+// --- RIFERIMENTI AL DOM ---
+const elements = {
+    wordInputScreen: document.getElementById('screen-word-input'),
+    gameScreen: document.getElementById('screen-game'),
+    wordInput: document.getElementById('word-input'),
+    toggleVisibilityButton: document.getElementById('toggle-visibility-button'),
+    submitWordButton: document.getElementById('submit-word-button'),
+    wordInputError: document.getElementById('word-input-error'),
+    gameInfo: document.querySelector('#screen-game .game-info'),
+    errorsCount: document.getElementById('errors-count'),
+    hangmanDrawing: document.getElementById('hangman-drawing'),
+    hangmanSVG: document.getElementById('hangman-svg'),
+    hgHead: document.getElementById('hg-head'),
+    hgBody: document.getElementById('hg-body'),
+    hgArmL: document.getElementById('hg-arm-l'),
+    hgArmR: document.getElementById('hg-arm-r'),
+    hgLegL: document.getElementById('hg-leg-l'),
+    hgLegR: document.getElementById('hg-leg-r'),
+    wordDisplayContainer: document.querySelector('.word-display-container'),
+    wordDisplay: document.getElementById('word-display'),
+    messageArea: document.getElementById('message-area'),
+    keyboardDiv: document.getElementById('keyboard'),
+    incorrectLettersDisplay: document.getElementById('incorrect-letters'),
+    newWordButton: document.getElementById('new-word-button'),
+    donationNotch: document.getElementById('donation-notch'),
+    donationHandle: document.getElementById('donation-handle'),
+    homeButton: document.getElementById('home-button'),
+    body: document.body
+};
+
+// --- FUNZIONI DI UTILITY ---
+const Utils = {
+    // Modificata per usare classe .hidden per bottone Home
+    showScreen: (screenId) => {
+         const screenElementId = `screen-${screenId.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
+         Object.keys(elements).filter(key => key.endsWith('Screen') || key.includes('Screen')).forEach(key => { if (elements[key]) elements[key].classList.remove('active-screen'); });
+         const targetScreen = document.getElementById(screenElementId);
+         if (targetScreen) {
+             targetScreen.classList.add('active-screen');
+             // Gestione Visibilità Bottone Home con classe CSS
+             if (elements.homeButton) {
+                if (screenId === 'wordInput') {
+                    elements.homeButton.classList.remove('hidden'); // Mostra (rimuovendo la classe)
+                } else {
+                    elements.homeButton.classList.add('hidden'); // Nascondi (aggiungendo la classe)
+                }
+             }
+         } else { console.error(`Screen element not found for ID: ${screenElementId}`); }
+     },
+    playSound: (soundName) => { /* console.log(`Simulazione suono: ${soundName}`); */ },
+    debounce: (func, wait) => { let timeout; return function executedFunction(...args) { const later = () => { clearTimeout(timeout); func(...args); }; clearTimeout(timeout); timeout = setTimeout(later, wait); }; }
+};
+
+// --- LOGICA PRINCIPALE ---
+const GameManager = {
+    init: () => {
+        GameManager.setupEventListeners();
+        GameManager.setupDonationNotch();
+        Utils.showScreen('wordInput'); // Parte da input, bottone Home visibile
+        elements.wordInput.focus();
+    },
+
+    setupEventListeners: () => {
+        elements.submitWordButton.addEventListener('click', GameManager.submitWord);
+        elements.wordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') GameManager.submitWord(); });
+        elements.toggleVisibilityButton.addEventListener('click', UI.toggleWordInputVisibility);
+        elements.keyboardDiv.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON' && !e.target.disabled && state.roundActive) { GameManager.handleGuess(e.target.textContent.toLowerCase()); } });
+        document.addEventListener('keydown', Utils.debounce((e) => {
+            const targetScreenActive = elements.gameScreen && elements.gameScreen.classList.contains('active-screen');
+            if (!state.roundActive || !targetScreenActive) return;
+            const letter = e.key.toLowerCase();
+            if (letter.match(/^[a-z]$/)) { const button = Array.from(elements.keyboardDiv.querySelectorAll('button')).find(btn => btn.textContent.toLowerCase() === letter); if (button && !button.disabled) { GameManager.handleGuess(letter); } }
+        }, 50));
+        elements.newWordButton.addEventListener('click', GameManager.resetForNewWord);
+        elements.homeButton.addEventListener('click', () => {
+            // La conferma non serve più se il bottone è visibile solo in input screen
+            window.location.href = 'index.html';
+        });
+    },
+
+    setupDonationNotch: () => { /* ... (invariata) ... */
+        if (elements.donationHandle && elements.donationNotch) {
+           elements.donationHandle.addEventListener('click', () => { elements.donationNotch.classList.toggle('visible'); });
+           document.addEventListener('click', (event) => { if (!elements.donationNotch.contains(event.target) && !elements.donationHandle.contains(event.target)) { elements.donationNotch.classList.remove('visible'); } });
+        } else { console.warn("Elementi Donation Notch non trovati."); }
+     },
+
+    submitWord: () => { /* ... (invariata) ... */
+        const word = elements.wordInput.value.trim(); elements.wordInputError.textContent = '';
+        const validationRegex = /^[a-zàèéìòù' ]+$/i;
+        if (word.length >= CONFIG.wordMinLength && validationRegex.test(word.replace(/'/g, ''))) { state.currentWord = word; Utils.showScreen('game'); GameManager.startRound(); }
+        else { elements.wordInputError.textContent = `Input non valido (min ${CONFIG.wordMinLength} caratteri, solo lettere ITA/ENG, spazi, apostrofi).`; elements.wordInput.focus(); elements.wordInput.classList.add('input-error-shake'); setTimeout(() => elements.wordInput.classList.remove('input-error-shake'), 500); }
+     },
+
+    startRound: () => {
+         state.roundActive = true; state.guessedLetters = []; state.incorrectGuesses = []; elements.messageArea.textContent = 'Indovina la parola o frase!'; elements.messageArea.className = 'message-area info';
+         UI.resetKeyboard();
+         UI.updateGameScreen(); // Questo chiama updateWordDisplay e adjustWordDisplaySize
+         elements.newWordButton.style.display = 'none'; Utils.playSound('roundStart');
+     },
+
+    handleGuess: (letter) => { /* ... (invariata) ... */
+        if (!state.roundActive) return; letter = letter.toLowerCase();
+        const alreadyGuessedIncorrect = state.incorrectGuesses.includes(letter);
+        const normalizedLetter = letter.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const alreadyGuessedNormalizedCorrect = state.guessedLetters.some(gl => gl.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === normalizedLetter);
+        if (alreadyGuessedIncorrect || alreadyGuessedNormalizedCorrect) { Utils.playSound('alreadyGuessed'); UI.disableKey(letter); return; }
+        UI.disableKey(letter); let isCorrect = false; let lettersToAdd = [];
+        for (let i = 0; i < state.currentWord.length; i++) { const originalChar = state.currentWord[i]; const normalizedChar = originalChar.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); if (normalizedChar === normalizedLetter) { isCorrect = true; if (!state.guessedLetters.includes(originalChar)) { lettersToAdd.push(originalChar); } } }
+        if (isCorrect) { state.guessedLetters.push(...lettersToAdd); Utils.playSound('correctGuess'); UI.animateLetterReveal(); } else { state.incorrectGuesses.push(letter); Utils.playSound('wrongGuess'); }
+        UI.updateGameScreen(); GameManager.checkRoundEnd();
+     },
+
+    checkRoundEnd: () => { /* ... (invariata) ... */
+        const relevantChars = state.currentWord.split('').filter(l => l !== ' ' && l !== "'");
+         const wordGuessed = relevantChars.length > 0 && relevantChars.every(l => state.guessedLetters.some(gl => gl.toLowerCase() === l.toLowerCase()));
+        const maxErrorsReached = state.incorrectGuesses.length >= CONFIG.maxErrors;
+        if (wordGuessed) { GameManager.endRound(true); } else if (maxErrorsReached) { GameManager.endRound(false); }
+     },
+
+    endRound: (isWin) => { /* ... (invariata) ... */
+        state.roundActive = false; Utils.playSound(isWin ? 'roundWin' : 'roundLose'); elements.messageArea.className = `message-area ${isWin ? 'win' : 'loss'}`;
+        if (isWin) { elements.messageArea.textContent = `Indovinato! Era: "${state.currentWord}" 🎉`; UI.animateWordVictory(); } else { elements.messageArea.textContent = `Peccato! Era: "${state.currentWord}" 😞`; UI.revealWord(); }
+        UI.disableKeyboard(); elements.newWordButton.style.display = 'block'; elements.newWordButton.focus();
+     },
+
+    resetForNewWord: () => {
+         Utils.showScreen('wordInput'); // Riporta a input E mostra home button
+         elements.wordInput.value = ''; elements.wordInputError.textContent = ''; elements.wordInput.type = 'password';
+         elements.toggleVisibilityButton.textContent = '👁️'; elements.toggleVisibilityButton.setAttribute('aria-label', 'Mostra parola');
+         elements.wordInput.focus();
+     },
+};
+
+// --- OGGETTO UI ---
+const UI = {
+    updateGameScreen: () => {
+        elements.errorsCount.textContent = `Errori: ${state.incorrectGuesses.length} / ${CONFIG.maxErrors}`;
+        UI.updateHangmanDrawing(state.incorrectGuesses.length);
+        elements.incorrectLettersDisplay.textContent = state.incorrectGuesses.length > 0 ? state.incorrectGuesses.join(', ') : 'Nessuna';
+        UI.updateWordDisplay(); // Aggiorna contenuto
+        UI.adjustWordDisplaySize(); // Adatta stile SE necessario
+    },
+    toggleWordInputVisibility: () => { /* ... (invariata) ... */ const isPassword = elements.wordInput.type === 'password'; elements.wordInput.type = isPassword ? 'text' : 'password'; elements.toggleVisibilityButton.textContent = isPassword ? '🙈' : '👁️'; elements.toggleVisibilityButton.setAttribute('aria-label', isPassword ? 'Nascondi parola' : 'Mostra parola'); },
+    updateHangmanDrawing: (errorCount) => { /* ... (invariata) ... */
+         const partsMap = [ null, elements.hgHead, elements.hgBody, elements.hgArmL, elements.hgArmR, elements.hgLegL, elements.hgLegR ]; let partMadeVisible = false;
+         partsMap.forEach(part => { if(part) part.classList.remove('visible'); });
+         for (let i = 1; i <= errorCount; i++) { if (partsMap[i]) { partsMap[i].classList.add('visible'); if (i === errorCount) partMadeVisible = true; } }
+         if (partMadeVisible && elements.hangmanSVG) { elements.hangmanSVG.classList.remove('incorrect-guess-feedback'); void elements.hangmanSVG.offsetWidth; elements.hangmanSVG.classList.add('incorrect-guess-feedback'); elements.hangmanSVG.addEventListener('animationend', () => { if(elements.hangmanSVG) elements.hangmanSVG.classList.remove('incorrect-guess-feedback'); }, { once: true }); }
+         else if (errorCount === 0 && elements.hangmanSVG) { elements.hangmanSVG.classList.remove('incorrect-guess-feedback'); }
+     },
+    updateWordDisplay: () => { /* ... (invariata) ... */
+         let displayHtmlArray = state.currentWord.split('').map(char => {
+             const lowerChar = char.toLowerCase();
+             const isGuessed = state.guessedLetters.includes(char) || state.guessedLetters.includes(lowerChar);
+             let displayChar = '_'; let extraClass = '';
+             if (char === ' ') { displayChar = ' '; extraClass = 'space guessed'; }
+             else if (char === "'") { displayChar = "'"; extraClass = 'punctuation guessed'; }
+             else if (!char.match(/[a-zàèéìòù]/i)) { displayChar = char; extraClass = 'punctuation guessed'; }
+             else if (isGuessed) { displayChar = char; extraClass = 'guessed'; }
+             return `<span class="letter-placeholder ${extraClass}">${displayChar}</span>`;
+         });
+         elements.wordDisplay.innerHTML = displayHtmlArray.join('');
+     },
+    // NUOVA FUNZIONE per adattare stile testo
+    adjustWordDisplaySize: () => {
+        const container = elements.wordDisplayContainer;
+        const display = elements.wordDisplay;
+        if (!container || !display || !display.hasChildNodes()) return;
+
+        // Definisci stili di default (dal CSS)
+        const defaultLetterSpacing = '10px';
+        const defaultWordSpacing = 'normal';
+        const defaultFontSize = ''; // Lascia che il CSS clamp faccia il suo lavoro di default
+
+        // Resetta stili inline prima di misurare
+        display.style.letterSpacing = defaultLetterSpacing;
+        display.style.wordSpacing = defaultWordSpacing;
+        display.style.fontSize = defaultFontSize;
+
+         // Usa requestAnimationFrame per assicurare che il browser abbia ricalcolato il layout
+         requestAnimationFrame(() => {
+            const containerWidth = container.offsetWidth - 10; // Tolleranza/Padding
+            let contentWidth = display.scrollWidth;
+
+            const minLetterSpacing = 1; // Spaziatura minima lettere
+            const minWordSpacing = -3; // Spaziatura minima parole (può essere negativa)
+
+            if (contentWidth > containerWidth) {
+                // console.log(`Adattamento: Contenuto ${contentWidth} > Contenitore ${containerWidth}`);
+
+                // 1. Riduci letter-spacing
+                let currentLetterSpacing = 10;
+                while (contentWidth > containerWidth && currentLetterSpacing > minLetterSpacing) {
+                    currentLetterSpacing = Math.max(minLetterSpacing, currentLetterSpacing - 1);
+                    display.style.letterSpacing = `${currentLetterSpacing}px`;
+                    contentWidth = display.scrollWidth; // Ricalcola
+                }
+
+                // 2. Se ancora largo e ci sono spazi, riduci word-spacing
+                if (contentWidth > containerWidth && state.currentWord.includes(' ')) {
+                    let currentWordSpacing = 0;
+                     while (contentWidth > containerWidth && currentWordSpacing > minWordSpacing) {
+                        currentWordSpacing = Math.max(minWordSpacing, currentWordSpacing - 1);
+                        display.style.wordSpacing = `${currentWordSpacing}px`;
+                        contentWidth = display.scrollWidth; // Ricalcola
+                    }
+                }
+
+                // 3. Come ultima risorsa (SE ANCORA NECESSARIO), potresti ridurre il font-size
+                // Ma è complesso da fare bene con clamp(). Per ora, lasciamo che vada a capo se
+                // la riduzione della spaziatura non è sufficiente.
+                // if (contentWidth > containerWidth) {
+                //    display.style.fontSize = '1.8em'; // Esempio di dimensione ridotta fissa
+                // }
+
+            }
+            // Non serve else per resettare, lo facciamo già all'inizio della funzione
+
+        }); // fine requestAnimationFrame
+    },
+    resetKeyboard: () => { elements.keyboardDiv.innerHTML = ''; const alphabet = 'abcdefghijklmnopqrstuvwxyz'; alphabet.split('').forEach(letter => { const button = document.createElement('button'); button.textContent = letter; button.setAttribute('aria-label', `Lettera ${letter.toUpperCase()}`); elements.keyboardDiv.appendChild(button); }); },
+    disableKey: (letter) => { const buttons = elements.keyboardDiv.getElementsByTagName('button'); for (let button of buttons) { if (button.textContent.toLowerCase() === letter.toLowerCase()) { button.disabled = true; button.setAttribute('aria-disabled', 'true'); break; } } },
+    disableKeyboard: () => { const buttons = elements.keyboardDiv.getElementsByTagName('button'); for (let button of buttons) { button.disabled = true; button.setAttribute('aria-disabled', 'true'); } },
+    revealWord: () => { elements.wordDisplay.innerHTML = state.currentWord.split('').map(char => { let extraClass = 'revealed'; if (char === ' ' || char === "'") { extraClass += ' guessed space'; } else if (!char.match(/[a-zàèéìòù]/i)) { extraClass += ' punctuation guessed'; } return `<span class="letter-placeholder ${extraClass}">${char}</span>`; }).join(''); UI.adjustWordDisplaySize(); }, // Adatta anche dopo reveal
+    displayTemporaryMessage: (areaElement, message, type = 'info', duration = 2000) => { if (!areaElement) return; const baseClass = areaElement.id.includes('error') ? 'error-message' : 'message-area'; const timeoutId = `timeout_${areaElement.id}`; areaElement.textContent = message; areaElement.className = `${baseClass} ${type}`; areaElement.style.opacity = '1'; clearTimeout(window[timeoutId]); window[timeoutId] = setTimeout(() => { if(areaElement.textContent === message) { areaElement.textContent = ''; areaElement.className = baseClass; } }, duration); },
+    animateLetterReveal: () => { const spans = elements.wordDisplay.querySelectorAll('.letter-placeholder.guessed:not(.animated)'); spans.forEach(span => { if (span.textContent !== ' ' && span.textContent !== "'") { span.classList.add('animated', 'correct-guess-feedback'); span.addEventListener('animationend', () => { span.classList.remove('correct-guess-feedback'); }, { once: true }); } }); },
+    animateWordVictory: () => { const spans = elements.wordDisplay.querySelectorAll('.letter-placeholder.guessed'); spans.forEach((span, index) => { if (span.textContent !== ' ' && span.textContent !== "'") { span.style.animation = `bounceVictory 0.6s ease-out ${index * 0.05}s 1 forwards`; } }); },
+    // Rimosso checkWordScroll, sostituito da adjustWordDisplaySize
+    // checkWordScroll: () => { ... }
+};
+
+// --- INIZIALIZZAZIONE ---
+GameManager.init();
+
+});
+    </script>
+</body>
+</html>
