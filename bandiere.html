@@ -92,31 +92,18 @@
       }
       @keyframes splashContentEntry { to { opacity: 1; } }
       
-      /* NUOVO: Stile per il link Home sopra il titolo */
       .home-link-top {
-        display: inline-flex; /* Allinea icona e testo */
-        align-items: center;
-        gap: 8px;
-        color: var(--text-muted);
-        text-decoration: none;
-        font-family: var(--font-secondary);
-        font-size: 1rem;
-        margin-bottom: 25px; /* Spazio prima del titolo principale */
-        padding: 8px 12px;
-        border-radius: var(--border-radius-sm);
+        display: inline-flex; align-items: center; gap: 8px; color: var(--text-muted);
+        text-decoration: none; font-family: var(--font-secondary); font-size: 1rem;
+        margin-bottom: 25px; padding: 8px 12px; border-radius: var(--border-radius-sm);
         transition: color 0.3s ease, background-color 0.3s ease;
-        opacity:0; animation: subtitleFadeInSplash 1.2s ease-out 1.2s forwards; /* Animazione entrata */
+        opacity:0; animation: subtitleFadeInSplash 1.2s ease-out 1.2s forwards;
       }
       .home-link-top:hover {
         color: var(--color-primary);
         background-color: rgba(var(--color-primary-rgb), 0.1);
       }
-      .home-link-top svg {
-        width: 1.1em; 
-        height: 1.1em;
-        fill: currentColor; 
-      }
-      /* Fine NUOVO Stile Home Link */
+      .home-link-top svg { width: 1.1em; height: 1.1em; fill: currentColor; }
 
       #splashScreen .game-title-main {
         font-family: var(--font-primary); font-weight: 900;
@@ -143,13 +130,11 @@
         transform: translateY(-6px) scale(1.05);
         box-shadow: 0 18px 45px rgba(var(--color-primary-rgb),0.6), var(--shadow-strong);
       }
-      /* Pulsante Regole è stato rimosso */
       
       @keyframes titlePopInSplash { 0% { opacity:0; transform: translateY(30px) scale(0.85); } 100% { opacity:1; transform: translateY(0) scale(1); } }
       @keyframes subtitleFadeInSplash { to { opacity:1; } }
       @keyframes buttonPopInSplash { 0% { opacity:0; transform: scale(0.9); } 100% { opacity:1; transform: scale(1); } }
 
-      /* Stili Modal (come prima) */
       .base-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(10,15,25,0.3); display: none; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transform: scale(0.95); transition: opacity 0.25s ease-out, transform 0.25s ease-out; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
       .base-modal.active { display: flex; opacity: 1; transform: scale(1); }
       .base-modal-content { position: relative; background-color: var(--bg-dark-secondary); border-radius: var(--border-radius-lg); box-shadow: var(--shadow-strong); border: 1px solid var(--border-color); overflow-y: auto; max-height: 90vh; display: flex; flex-direction: column; }
@@ -162,7 +147,6 @@
       .modal-screen.exiting-modal-screen { animation: screenExitModal 0.25s ease-in forwards !important; }
       @keyframes screenExitModal { 0% { opacity:1; transform: translateX(0); } 100% { opacity:0; transform: translateX(-15px); } }
       
-      /* Stili per elementi interni al modal (come prima) */
       .modal-screen .screen-title { font-family: var(--font-primary); font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.6rem); margin-bottom: 35px; color: var(--text-light); line-height: 1.2; }
       .modal-screen .navigation-buttons { margin-top: 35px; display: flex; justify-content: space-around; align-items: center; gap: 15px; width:100%; }
       .modal-screen .navigation-buttons .game-button { flex-grow: 1; max-width: 250px; }
@@ -232,7 +216,7 @@
       @keyframes explode-confetti { 0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; } 30% { opacity: 1; } 100% { transform: translate(-50%, -50%) scale(25); opacity: 0; } }
       @keyframes fadeInScaleUp { 0% { opacity:0; transform: scale(0.95); } 100% { opacity:1; transform: scale(1); } }
         
-      .donation-notch-flags { /* ... (come prima) ... */
+      .donation-notch-flags {
           position: fixed; bottom: 0; left: 0; right: 0;
           background-color: var(--bg-dark-tertiary);
           padding: 12px 20px; display: flex;
@@ -243,7 +227,7 @@
           transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
       .donation-notch-flags.visible { transform: translateY(0); }
-      .donation-handle-flags { /* ... (come prima) ... */
+      .donation-handle-flags {
           position: absolute; top: -30px; left: 50%;
           transform: translateX(-50%); background-color: var(--color-accent);
           color: var(--bg-dark-primary); padding: 8px 25px;
@@ -364,9 +348,7 @@
     <script>
     document.addEventListener("DOMContentLoaded", async () => {
         const gameModalElement = document.getElementById("gameModal");
-        // const rulesModalElement = document.getElementById("rulesModal"); // RIMOSSO
         const closeModalBtnGame = document.getElementById("closeGameModalBtn");
-        // const closeModalBtnRules = document.getElementById("closeRulesModalBtn"); // RIMOSSO
         const flagsDonationNotchElement = document.getElementById("flagsDonationNotch");
         const donationHandleFlagsElement = document.getElementById("donationHandleFlags");
 
@@ -378,37 +360,24 @@
         };
         const ui = { 
             newGameMainBtn: document.getElementById("newGameBtnMain"),
-            // rulesBtnSplash: document.getElementById("rulesBtnSplash"), // RIMOSSO
             addPlayerBtn: document.getElementById("addPlayerBtn"),
             goToGameSettingsBtn: document.getElementById("goToGameSettingsBtn"),
-            backToPlayerSelectionBtn: document.getElementById(
-              "backToPlayerSelectionBtn"
-            ),
+            backToPlayerSelectionBtn: document.getElementById("backToPlayerSelectionBtn"),
             initGameBtn: document.getElementById("initGameBtn"),
             correctAnswerBtn: document.getElementById("correctAnswerBtn"),
             incorrectAnswerBtn: document.getElementById("incorrectAnswerBtn"),
             playAgainResultsBtn: document.getElementById("playAgainResultsBtn"),
-            playersInputContainer: document.getElementById(
-              "playersInputContainer"
-            ),
+            playersInputContainer: document.getElementById("playersInputContainer"),
             numTotalFlagsInput: document.getElementById("numTotalFlagsInput"),
             timePerFlagInput: document.getElementById("timePerFlagInput"),
             turnIndicator: document.getElementById("turnIndicator"),
-            currentFlagInfoDisplay: document.getElementById(
-              "currentFlagInfoDisplay"
-            ),
-            currentPlayerScoreDisplay: document.getElementById(
-              "currentPlayerScoreDisplay"
-            ),
+            currentFlagInfoDisplay: document.getElementById("currentFlagInfoDisplay"),
+            currentPlayerScoreDisplay: document.getElementById("currentPlayerScoreDisplay"),
             flagDisplayContainer: document.getElementById("flagDisplayContainer"),
             timerDisplay: document.getElementById("timerDisplay"),
-            evaluationButtonsContainer: document.getElementById(
-              "evaluationButtonsContainer"
-            ),
+            evaluationButtonsContainer: document.getElementById("evaluationButtonsContainer"),
             answerRevealText: document.getElementById("answerRevealText"),
-            playerScoresContainer: document.getElementById(
-              "playerScoresContainer"
-            ),
+            playerScoresContainer: document.getElementById("playerScoresContainer"),
             overallWinnerMessage: document.getElementById("overallWinnerMessage"),
             nightSky: document.getElementById("nightSky"),
             navigateToIndexBtn: document.getElementById("navigateToIndexBtn") 
@@ -418,6 +387,101 @@
         let timerInterval;
         let currentFlagDataForTurn;
         let allFlagsMasterList = [];
+
+        // --- INIZIO SEZIONE WEB AUDIO API ---
+        let audioCtx;
+        // Rimosse: lowTimeWarningOscillator e lowTimeWarningGain
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+        
+        function playTone({ frequency = 440, duration = 0.1, type = 'sine', volume = 0.5, attack = 0.005, decay = 0.01 }) {
+            if (!audioCtx || audioCtx.state === 'suspended') return;
+            try {
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                const now = audioCtx.currentTime;
+
+                oscillator.type = type;
+                oscillator.frequency.setValueAtTime(frequency, now);
+                
+                gainNode.gain.setValueAtTime(0, now);
+                gainNode.gain.linearRampToValueAtTime(volume, now + attack); 
+                gainNode.gain.linearRampToValueAtTime(0, now + duration - decay); 
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                oscillator.start(now);
+                oscillator.stop(now + duration);
+            } catch (e) {
+                console.warn("Errore durante la riproduzione del tono:", e);
+            }
+        }
+
+        function playNoise({ duration = 0.1, volume = 0.1, attack = 0.01, decay = 0.01 }) {
+            if (!audioCtx || audioCtx.state === 'suspended') return;
+            try {
+                const bufferSize = audioCtx.sampleRate * duration;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const output = buffer.getChannelData(0);
+                const now = audioCtx.currentTime;
+
+                for (let i = 0; i < bufferSize; i++) {
+                    output[i] = Math.random() * 2 - 1;
+                }
+
+                const noiseSource = audioCtx.createBufferSource();
+                noiseSource.buffer = buffer;
+                const gainNode = audioCtx.createGain();
+
+                gainNode.gain.setValueAtTime(0, now);
+                gainNode.gain.linearRampToValueAtTime(volume, now + attack);
+                gainNode.gain.linearRampToValueAtTime(0, now + duration - decay);
+
+                noiseSource.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                noiseSource.start(now);
+                noiseSource.stop(now + duration);
+            } catch (e) {
+                console.warn("Errore durante la riproduzione del rumore:", e);
+            }
+        }
+
+        function playSweep({ startFreq = 200, endFreq = 800, duration = 0.2, type = 'sine', volume = 0.4, attack = 0.01, decay = 0.01 }) {
+            if (!audioCtx || audioCtx.state === 'suspended') return;
+            try {
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                const now = audioCtx.currentTime;
+
+                oscillator.type = type;
+                oscillator.frequency.setValueAtTime(startFreq, now);
+                oscillator.frequency.linearRampToValueAtTime(endFreq, now + duration - (decay * 2));
+                
+                gainNode.gain.setValueAtTime(0, now);
+                gainNode.gain.linearRampToValueAtTime(volume, now + attack);
+                gainNode.gain.linearRampToValueAtTime(0, now + duration - decay);
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                oscillator.start(now);
+                oscillator.stop(now + duration);
+            } catch (e) {
+                console.warn("Errore durante la riproduzione dello sweep:", e);
+            }
+        }
+        // Rimosse: startLowTimeWarningSound() e stopLowTimeWarningSound()
+        // --- FINE SEZIONE WEB AUDIO API ---
+
 
         function createShootingStars() {
             if (!ui.nightSky) return;
@@ -472,34 +536,38 @@
 
         function openModal(modalElement) {
             if (!modalElement) return;
+            initAudio(); 
+            playSweep({ startFreq: 200, endFreq: 500, duration: 0.15, type: 'triangle', volume: 0.3, attack:0.01, decay:0.05 });
             modalElement.classList.add("active");
             document.body.classList.add("modal-active-blur"); 
         }
 
         function closeModal(modalElement) {
             if (!modalElement) return;
+            // Non c'è più stopLowTimeWarningSound() da chiamare qui specificamente
+            playSweep({ startFreq: 500, endFreq: 200, duration: 0.15, type: 'triangle', volume: 0.3, attack:0.01, decay:0.05 });
             modalElement.classList.remove("active");
-            const anyModalActive = document.querySelector(".base-modal.active"); // Verifica se *qualsiasi* modal base è ancora attivo
-            if (!anyModalActive) { // Rimuovi il blur solo se NESSUN modal è attivo
+            const anyModalActive = document.querySelector(".base-modal.active");
+            if (!anyModalActive) {
               document.body.classList.remove("modal-active-blur");
             }
         }
 
         if(ui.newGameMainBtn) ui.newGameMainBtn.onclick = () => {
+            initAudio(); 
+            playTone({frequency: 440, duration: 0.1, type:'square', volume: 0.4, attack:0.01, decay:0.05});
             openModal(gameModalElement);
             initializeNewGame();
             showModalScreen("playerSelection");
         };
-        if (closeModalBtnGame) closeModalBtnGame.onclick = () => closeModal(gameModalElement);
-        
-        // Listener per il pulsante Regole RIMOSSO
-        // if (ui.rulesBtnSplash) ui.rulesBtnSplash.onclick = () => openModal(rulesModalElement);
-        // if (closeModalBtnRules) closeModalBtnRules.onclick = () => closeModal(rulesModalElement);
+        if (closeModalBtnGame) closeModalBtnGame.onclick = () => {
+            playTone({frequency: 300, duration: 0.08, type:'sawtooth', volume: 0.3, attack:0.01, decay:0.04});
+            closeModal(gameModalElement);
+        }
         
         function showModalScreen(modalScreenId) { 
-            const activeModalScreen = gameModalElement.querySelector(
-              ".modal-screen.active-modal-screen"
-            );
+            playSweep({startFreq: 400, endFreq: 700, duration: 0.1, type:'sawtooth', volume:0.2, attack:0.01, decay:0.04});
+            const activeModalScreen = gameModalElement.querySelector(".modal-screen.active-modal-screen");
             const screenToShow = modalScreens[modalScreenId];
             if (!screenToShow) {
               console.error("Schermata modal non trovata:", modalScreenId);
@@ -509,12 +577,8 @@
             if (activeModalScreen && activeModalScreen !== screenToShow) {
               activeModalScreen.classList.add("exiting-modal-screen");
               setTimeout(() => {
-                activeModalScreen.classList.remove(
-                  "active-modal-screen",
-                  "exiting-modal-screen"
-                );
+                activeModalScreen.classList.remove("active-modal-screen", "exiting-modal-screen");
                 activeModalScreen.style.display = "none";
-
                 screenToShow.style.display = "flex";
                 screenToShow.classList.add("active-modal-screen");
                 screenToShow.style.animation = "none";
@@ -532,7 +596,9 @@
               screenToShow.classList.add("active-modal-screen");
             }
         }
+
         function initializeNewGame() { 
+            // Non c'è più stopLowTimeWarningSound()
             gameState = {
               players: [{ name: "", score: 0 }],
               settings: {
@@ -555,8 +621,7 @@
               input.className = "player-name-input";
               input.placeholder = `Nome Giocatore ${index + 1}`;
               input.value = player.name;
-              input.oninput = (e) =>
-                (gameState.players[index].name = e.target.value.trim());
+              input.oninput = (e) => (gameState.players[index].name = e.target.value.trim());
               group.appendChild(input);
               if (gameState.players.length > 1) {
                 const removeBtn = document.createElement("button");
@@ -564,6 +629,7 @@
                 removeBtn.className = "game-button remove-player-btn";
                 removeBtn.title = "Rimuovi Giocatore";
                 removeBtn.onclick = () => {
+                  playTone({frequency: 200, duration:0.1, type: 'square', volume: 0.3, attack:0.01, decay:0.05}); 
                   gameState.players.splice(index, 1);
                   renderPlayerInputs();
                 };
@@ -574,19 +640,21 @@
         }
 
         if (ui.addPlayerBtn) ui.addPlayerBtn.onclick = () => { 
+            playTone({frequency: 880, duration: 0.08, type: 'triangle', volume: 0.4, attack:0.01, decay:0.04}); 
             if (gameState.players.length < 4) {
               gameState.players.push({ name: "", score: 0 });
               renderPlayerInputs();
             } else {
+              playTone({frequency: 150, duration: 0.2, type: 'sawtooth', volume: 0.4, attack:0.01, decay:0.1});
               alert("Massimo 4 giocatori sono ammessi.");
             }
         };
         
         if (ui.goToGameSettingsBtn) ui.goToGameSettingsBtn.onclick = () => { 
-            const validPlayers = gameState.players.filter(
-              (p) => p.name.trim() !== ""
-            );
+            playTone({frequency: 523, duration: 0.09, type:'sine', volume: 0.4, attack:0.01, decay:0.04}); 
+            const validPlayers = gameState.players.filter( (p) => p.name.trim() !== "");
             if (validPlayers.length === 0) {
+              playTone({frequency: 180, duration: 0.2, type: 'sawtooth', volume: 0.4, attack:0.01, decay:0.1}); 
               alert("Devi inserire il nome per almeno un giocatore.");
               return;
             }
@@ -596,110 +664,115 @@
         };
         
         if (ui.backToPlayerSelectionBtn) ui.backToPlayerSelectionBtn.onclick = () => { 
+            playTone({frequency: 380, duration: 0.09, type:'sine', volume: 0.3, attack:0.01, decay:0.04}); 
             renderPlayerInputs();
             showModalScreen("playerSelection");
         };
 
         if (ui.initGameBtn) ui.initGameBtn.onclick = () => { 
-            gameState.settings.numTotalFlags =
-              parseInt(ui.numTotalFlagsInput.value) || 10;
-            gameState.settings.timePerFlag =
-              parseInt(ui.timePerFlagInput.value) || 10;
-            if (!prepareGameFlagsArray()) return;
+            playTone({frequency: 600, duration: 0.1, type:'square', volume: 0.5, attack:0.01, decay:0.05}); 
+            gameState.settings.numTotalFlags = parseInt(ui.numTotalFlagsInput.value) || 10;
+            gameState.settings.timePerFlag = parseInt(ui.timePerFlagInput.value) || 10;
+            if (!prepareGameFlagsArray()) {
+                playTone({frequency: 150, duration: 0.3, type: 'sawtooth', volume: 0.4, attack:0.02, decay:0.15}); 
+                return;
+            }
+            playTone({ frequency: 330, duration: 0.1, type: 'sine', volume: 0.4, attack:0.01, decay:0.05}); 
+            setTimeout(() => playTone({ frequency: 440, duration: 0.1, type: 'sine', volume: 0.4, attack:0.01, decay:0.05 }), 120);
+            setTimeout(() => playTone({ frequency: 550, duration: 0.15, type: 'sine', volume: 0.5, attack:0.01, decay:0.08 }), 240);
+            
             gameState.currentFlagGlobalIndex = 0;
             startNewTurn();
         };
 
         function prepareGameFlagsArray() { 
             const numFlagsNeeded = gameState.settings.numTotalFlags;
-            if (
-              allFlagsMasterList.length === 0 ||
-              (allFlagsMasterList.length === 1 &&
-                allFlagsMasterList[0].id === "error_fallback")
-            ) {
-              alert(
-                "Dati delle bandiere non caricati o insufficienti. Impossibile avviare la partita."
-              );
+            if (allFlagsMasterList.length === 0 || (allFlagsMasterList.length === 1 && allFlagsMasterList[0].id === "error_fallback")) {
+              alert("Dati delle bandiere non caricati o insufficienti. Impossibile avviare la partita.");
               return false;
             }
-            let availableFlags = allFlagsMasterList.filter(
-              (flag) => !gameState.usedFlagsThisSession.has(flag.id)
-            );
-
+            let availableFlags = allFlagsMasterList.filter( (flag) => !gameState.usedFlagsThisSession.has(flag.id));
             if (availableFlags.length < numFlagsNeeded) {
-              if (
-                confirm(
-                  `Bandiere nuove insufficienti (${availableFlags.length} disponibili per ${numFlagsNeeded} richieste). Vuoi resettare le bandiere già viste in questa sessione e continuare?`
-                )
-              ) {
+              playTone({frequency: 200, duration: 0.15, type: 'square', volume: 0.3, attack:0.01, decay:0.07}); 
+              if (confirm( `Bandiere nuove insufficienti (${availableFlags.length} disponibili per ${numFlagsNeeded} richieste). Vuoi resettare le bandiere già viste in questa sessione e continuare?`)) {
                 gameState.usedFlagsThisSession.clear();
                 availableFlags = [...allFlagsMasterList];
                 if (availableFlags.length < numFlagsNeeded) {
-                  alert(
-                    `Anche dopo il reset, ci sono solo ${availableFlags.length} bandiere uniche totali. Riduci il numero di bandiere per la partita o aggiungine altre al file flags.json.`
-                  );
+                  playTone({frequency: 150, duration: 0.2, type: 'sawtooth', volume: 0.4, attack:0.01, decay:0.1}); 
+                  alert( `Anche dopo il reset, ci sono solo ${availableFlags.length} bandiere uniche totali. Riduci il numero di bandiere per la partita o aggiungine altre al file flags.json.`);
                   return false;
                 }
-              } else {
-                return false;
-              }
+              } else { return false; }
             }
-            
             const shuffled = [...availableFlags].sort(() => 0.5 - Math.random());
             gameState.gameFlags = shuffled.slice(0, numFlagsNeeded);
-            gameState.gameFlags.forEach((flag) =>
-              gameState.usedFlagsThisSession.add(flag.id)
-            );
+            gameState.gameFlags.forEach((flag) => gameState.usedFlagsThisSession.add(flag.id));
             return true;
         }
         function getCurrentPlayerForTurn() { 
-            return gameState.players[
-              gameState.currentFlagGlobalIndex % gameState.players.length
-            ];
+            return gameState.players[ gameState.currentFlagGlobalIndex % gameState.players.length ];
         }
+
         function startNewTurn() { 
-            if (
-              gameState.currentFlagGlobalIndex >= gameState.settings.numTotalFlags
-            ) {
-              endGame();
+            // Non c'è più stopLowTimeWarningSound()
+            if (gameState.currentFlagGlobalIndex >= gameState.settings.numTotalFlags) {
+              endGame(); 
               return;
             }
+            playSweep({startFreq: 300, endFreq: 400, duration: 0.08, type:'triangle', volume: 0.2, attack:0.01, decay:0.03});
+
             const player = getCurrentPlayerForTurn();
-            currentFlagDataForTurn =
-              gameState.gameFlags[gameState.currentFlagGlobalIndex];
+            currentFlagDataForTurn = gameState.gameFlags[gameState.currentFlagGlobalIndex];
             ui.turnIndicator.textContent = `È il turno di: ${player.name}`;
-            ui.currentFlagInfoDisplay.textContent = `Bandiera: ${
-              gameState.currentFlagGlobalIndex + 1
-            } / ${gameState.settings.numTotalFlags}`;
+            ui.currentFlagInfoDisplay.textContent = `Bandiera: ${ gameState.currentFlagGlobalIndex + 1} / ${gameState.settings.numTotalFlags}`;
             ui.currentPlayerScoreDisplay.textContent = `Punteggio: ${player.score}`;
             ui.flagDisplayContainer.innerHTML = `<img src="${currentFlagDataForTurn.src}" alt="Bandiera da indovinare" onerror="this.parentElement.innerHTML='<p style=\\'color:var(--color-danger); padding:10px; font-size:0.9rem;\\'>Immagine bandiera non trovata: ${currentFlagDataForTurn.src}.<br>Controlla il percorso nel file flags.json e la presenza del file.</p>';">`;
             
             ui.evaluationButtonsContainer.style.display = "none";
             ui.answerRevealText.textContent = "";
             ui.flagDisplayContainer.className = ""; 
-            showModalScreen("game");
+            showModalScreen("game"); 
             startTimer();
         }
 
         function startTimer() { 
             clearInterval(timerInterval);
             let timeLeft = gameState.settings.timePerFlag;
-            ui.timerDisplay.textContent =
-              timeLeft > 0 ? `${timeLeft}s` : "Nessun Limite";
-            ui.timerDisplay.classList.remove("time-low");
+            ui.timerDisplay.textContent = timeLeft > 0 ? `${timeLeft}s` : "Nessun Limite";
+            ui.timerDisplay.classList.remove("time-low"); // Rimuovi all'inizio
 
-            if (timeLeft === 0) {
+            if (timeLeft === 0) { // Tempo illimitato
               showEvaluationUI(true); 
               return;
             }
+
             timerInterval = setInterval(() => {
               timeLeft--;
               ui.timerDisplay.textContent = `${timeLeft}s`;
-              if (timeLeft <= 5 && timeLeft > 0) {
-                ui.timerDisplay.classList.add("time-low");
+              
+              if (timeLeft > 0) { 
+                // Suono "bip" per ogni secondo che passa
+                playTone({
+                    frequency: 900, // Frequenza del bip
+                    duration: 0.07,  // Durata breve per un "bip" secco
+                    type: 'square', // 'square' o 'triangle' per un bip più definito
+                    volume: 0.15,   // Volume discreto per non essere troppo fastidioso
+                    attack: 0.002,
+                    decay: 0.04
+                });
+
+                if (timeLeft <= 5) { // Solo per l'effetto visivo "time-low"
+                    ui.timerDisplay.classList.add("time-low");
+                } else {
+                    ui.timerDisplay.classList.remove("time-low");
+                }
               }
+
               if (timeLeft <= 0) {
                 clearInterval(timerInterval);
+                ui.timerDisplay.classList.remove("time-low"); // Pulisci la classe visiva
+                // Suono distintivo per tempo scaduto
+                playSweep({startFreq:700, endFreq: 300, duration: 0.4, type: 'sawtooth', volume: 0.5, attack:0.02, decay:0.1}); 
                 showEvaluationUI(true); 
               }
             }, 1000);
@@ -708,7 +781,7 @@
         function showEvaluationUI(isTimeUp = false) { 
             if (isTimeUp && currentFlagDataForTurn) { 
               ui.timerDisplay.textContent = `Era: ${currentFlagDataForTurn.name}`; 
-              ui.timerDisplay.classList.remove("time-low");
+              ui.timerDisplay.classList.remove("time-low"); 
             } else if (gameState.settings.timePerFlag === 0 && currentFlagDataForTurn) {
               ui.timerDisplay.textContent = `Valuta la bandiera: ${currentFlagDataForTurn.name}`;
             }
@@ -716,8 +789,16 @@
             ui.answerRevealText.textContent = "La tua risposta era corretta o sbagliata?";
         }
 
-        if (ui.correctAnswerBtn) ui.correctAnswerBtn.onclick = () => processPlayerEvaluation(true);
-        if (ui.incorrectAnswerBtn) ui.incorrectAnswerBtn.onclick = () => processPlayerEvaluation(false);
+        if (ui.correctAnswerBtn) ui.correctAnswerBtn.onclick = () => {
+            // Non c'è più stopLowTimeWarningSound()
+            playSweep({startFreq: 500, endFreq: 1000, duration: 0.2, type:'sine', volume:0.5, attack:0.01, decay:0.08}); 
+            processPlayerEvaluation(true);
+        }
+        if (ui.incorrectAnswerBtn) ui.incorrectAnswerBtn.onclick = () => {
+            // Non c'è più stopLowTimeWarningSound()
+            playSweep({startFreq: 400, endFreq: 150, duration: 0.25, type:'square', volume:0.4, attack:0.01, decay:0.1}); 
+            processPlayerEvaluation(false);
+        }
 
         function processPlayerEvaluation(playerChoseCorrect) { 
             ui.evaluationButtonsContainer.style.display = "none";
@@ -737,27 +818,27 @@
 
             setTimeout(() => {
               gameState.currentFlagGlobalIndex++;
-              startNewTurn();
+              startNewTurn(); 
             }, 2800);
         }
+
         function endGame() { 
+            // Non c'è più stopLowTimeWarningSound()
+            playTone({ frequency: 261, duration: 0.15, type: 'triangle', volume: 0.4, attack:0.02, decay:0.05}); 
+            setTimeout(() => playTone({ frequency: 330, duration: 0.15, type: 'triangle', volume: 0.4, attack:0.02, decay:0.05 }), 150); 
+            setTimeout(() => playTone({ frequency: 392, duration: 0.2, type: 'triangle', volume: 0.5, attack:0.02, decay:0.1 }), 300); 
+
             ui.playerScoresContainer.innerHTML = "";
             let maxScore = -1;
             let winners = [];
-            const sortedPlayers = [...gameState.players].sort(
-              (a, b) => b.score - a.score
-            );
+            const sortedPlayers = [...gameState.players].sort( (a, b) => b.score - a.score );
 
             sortedPlayers.forEach((player, index) => {
               const card = document.createElement("div");
               card.className = "player-score-card";
               let rankDisplay = `${index + 1}°`;
               const prevCard = ui.playerScoresContainer.children[index - 1];
-              if (
-                index > 0 &&
-                player.score === sortedPlayers[index - 1].score &&
-                prevCard
-              ) {
+              if (index > 0 && player.score === sortedPlayers[index - 1].score && prevCard) {
                 const prevRankElement = prevCard.querySelector(".rank");
                 if (prevRankElement) rankDisplay = prevRankElement.textContent;
               }
@@ -779,8 +860,7 @@
                 cards[i].classList.add("winner-card");
                 const badge = document.createElement("span");
                 badge.className = "winner-badge";
-                badge.textContent =
-                  winners.length > 1 ? "🏆 Pareggio" : "👑 Vincitore!";
+                badge.textContent = winners.length > 1 ? "🏆 Pareggio" : "👑 Vincitore!";
                 const nameElement = cards[i].querySelector(".player-name");
                 if (nameElement) nameElement.appendChild(badge);
               }
@@ -789,11 +869,15 @@
             if (winners.length === 0 || maxScore === -1) {
               ui.overallWinnerMessage.textContent = "La partita si è conclusa!";
             } else if (winners.length > 1) {
-              ui.overallWinnerMessage.textContent = `Congratulazioni! È un pareggio epico tra: ${winners.join(
-                " e "
-              )} con ${maxScore} punti!`;
+              ui.overallWinnerMessage.textContent = `Congratulazioni! È un pareggio epico tra: ${winners.join(" e ")} con ${maxScore} punti!`;
             } else {
               ui.overallWinnerMessage.textContent = `🎉 ${winners[0]} è il Campione Assoluto delle Bandiere con ${maxScore} punti! 🎉`;
+                setTimeout(() => { 
+                    playTone({ frequency: 523, duration: 0.1, type: 'sine', volume: 0.5, attack:0.01, decay:0.05 }); 
+                    setTimeout(() => playTone({ frequency: 659, duration: 0.1, type: 'sine', volume: 0.5, attack:0.01, decay:0.05 }), 100); 
+                    setTimeout(() => playTone({ frequency: 784, duration: 0.1, type: 'sine', volume: 0.5, attack:0.01, decay:0.05 }), 200); 
+                    setTimeout(() => playTone({ frequency: 1046, duration: 0.25, type: 'sine', volume: 0.6, attack:0.01, decay:0.1 }), 300);
+                }, 800);
             }
             
             const resultsModalScreen = modalScreens.results;
@@ -805,15 +889,17 @@
         }
 
         if (ui.playAgainResultsBtn) ui.playAgainResultsBtn.onclick = () => { 
+            playTone({frequency: 440, duration: 0.1, type:'square', volume: 0.4, attack:0.01, decay:0.05}); 
             const resultsModalScreen = modalScreens.results;
             if (resultsModalScreen) resultsModalScreen.classList.remove("is-winner");
-            initializeNewGame();
+            initializeNewGame(); 
             showModalScreen("playerSelection"); 
         };
         
         function setupDonationNotch() {
             if (donationHandleFlagsElement && flagsDonationNotchElement) {
                 donationHandleFlagsElement.addEventListener('click', () => {
+                    playTone({frequency: 700, duration: 0.07, type:'triangle', volume:0.3, attack:0.005, decay:0.03}); 
                     flagsDonationNotchElement.classList.toggle('visible');
                 });
             }
@@ -822,7 +908,7 @@
         async function initApp() {
             createShootingStars();
             await loadFlags();
-            initializeNewGame();
+            initializeNewGame(); 
             setupDonationNotch(); 
         }
         initApp();

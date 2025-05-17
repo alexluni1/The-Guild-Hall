@@ -78,9 +78,18 @@
         height: 100%;
         width: 100%;
       }
-      #intro-screen.active {
-        /* Usa .active */
-      }
+      #intro-screen {
+  background-color: var(--primary-color);
+  /* ... altri stili di background ... */
+  overflow-y: auto;
+  height: 100vh;
+  width: 100vw;
+  padding: 2rem;
+  display: flex;            /* Già flex di default */
+  flex-direction: column;   /* Già column di default */
+  align-items: center;      /* Già center di default */
+  justify-content: center;  /* Già center di default */
+}
       button,
       .button-link,
       .button-like {
@@ -804,8 +813,9 @@
         transform: scale(1.05);
       }
       #new-game.start-btn {
-        /* Eredita da .start-btn ma usa dimensioni comuni */
-      }
+  /* Eredita da .start-btn ma usa dimensioni comuni */
+  border-radius: 8px; /* O 5px, per uniformità con gli altri bottoni nel gruppo */
+}
 
       /* === Stili Popup Generali === */
       .popup-overlay {
@@ -1713,7 +1723,10 @@
         <div class="donation-content">
           <div class="donation-text">
             <h3>Aiutami a migliorare!</h3>
-            <p>Il tuo contributo mi aiuterà ad aggiungere giochi e a migliorare quelli esistenti.</p>
+            <p>
+              Il tuo contributo mi aiuterà ad aggiungere giochi e a migliorare
+              quelli esistenti.
+            </p>
           </div>
           <div class="donation-buttons">
             <a
@@ -1729,8 +1742,6 @@
       </div>
     </div>
     <script>
-      // Incolla qui l'INTERO blocco JavaScript aggiornato dalla risposta precedente
-      // (quello con entrambe le funzioni updateCategoryDisplay e updateCurrentTeamDisplay definite)
       document.addEventListener("DOMContentLoaded", () => {
         // === Element Selection (VERIFICA CHE SIANO TUTTE PRESENTI) ===
         const introScreen = document.getElementById("intro-screen");
@@ -2100,22 +2111,22 @@
                 `category-count-${boardCategories.length}`
               );
             }
-            console.log(`     Class: ${gameBoard.className}`);
+            console.log(`      Class: ${gameBoard.className}`);
             console.log("  3. Select questions...");
             currentGameQuestions =
               selectRandomQuestionsForBoard(boardCategories);
-            console.log(`     -> ${currentGameQuestions.length} selected.`);
+            console.log(`      -> ${currentGameQuestions.length} selected.`);
             if (
               currentGameQuestions.length === 0 &&
               boardCategories.length > 0
             ) {
-              console.warn("     WARN: No questions found!");
+              console.warn("      WARN: No questions found!");
             }
             console.log("  4. Set counts...");
             totalQuestions = boardCategories.length * 5;
             answeredQuestionsCount = 0;
             console.log(
-              `     -> Total: ${totalQuestions}, Answered: ${answeredQuestionsCount}`
+              `      -> Total: ${totalQuestions}, Answered: ${answeredQuestionsCount}`
             );
             console.log("  5. Reset cells...");
             resetBoardCells();
@@ -2169,11 +2180,11 @@
             console.error("selectRQFB no cats!");
             return [];
           }
-          /*console.log("    Selecting Qs for:", boardCategories); console.log("    Data:", gameData.questions);*/ boardCategories.forEach(
+          /*console.log("     Selecting Qs for:", boardCategories); console.log("     Data:", gameData.questions);*/ boardCategories.forEach(
             (catName, catIdx) => {
-              /*console.log(`    -> Cat ${catIdx}: ${catName}`);*/ v.forEach(
+              /*console.log(`     -> Cat ${catIdx}: ${catName}`);*/ v.forEach(
                 (val) => {
-                  /*console.log(`      -> Val: ${val}`);*/ let cq;
+                  /*console.log(`         -> Val: ${val}`);*/ let cq;
                   try {
                     cq = gameData.questions.filter(
                       (q) => q && q.category === catName && q.value === val
@@ -2185,12 +2196,14 @@
                     );
                     cq = [];
                   }
-                  /*console.log(`        Found ${cq.length}`);*/ let chosenQ;
+                  /*console.log(`          Found ${cq.length}`);*/ let chosenQ;
                   if (cq.length > 0) {
                     const i = Math.floor(Math.random() * cq.length);
                     chosenQ = { ...cq[i] };
                   } else {
-                    console.warn(`        No Q "${catName}"/${val}. Fallback.`);
+                    console.warn(
+                      `          No Q "${catName}"/${val}. Fallback.`
+                    );
                     chosenQ = {
                       category: catName,
                       value: val,
@@ -2521,13 +2534,7 @@
               handleWrongAnswer();
               e.preventDefault();
             }
-          } else if (e.code === "KeyF") {
-            toggleFullscreen();
-            e.preventDefault();
-          } else if (
-            e.code === "KeyR" &&
-            !gameBoard.classList.contains("hidden")
-          ) {
+          }  {
             if (leaderboardPopup.classList.contains("hidden")) {
               showCurrentRanking();
             } else {
